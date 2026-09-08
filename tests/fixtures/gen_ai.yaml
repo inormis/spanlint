@@ -1,0 +1,38 @@
+groups:
+  - id: registry.gen_ai
+    type: attribute_group
+    display_name: GenAI Attributes
+    brief: Attributes for Generative AI telemetry.
+    attributes:
+      - id: gen_ai.system
+        stability: development
+        type:
+          members:
+            - id: openai
+              value: openai
+              brief: OpenAI
+              stability: development
+            - id: anthropic
+              value: anthropic
+              brief: Anthropic
+              stability: development
+        brief: The GenAI product as identified by the instrumentation.
+      - id: gen_ai.request.model
+        stability: development
+        type: string
+        brief: The name of the GenAI model a request is being made to.
+      - id: gen_ai.usage.input_tokens
+        stability: development
+        type: int
+        brief: Number of tokens used in the prompt.
+
+  - id: span.gen_ai.client
+    type: span
+    span_kind: client
+    stability: development
+    brief: Describes a GenAI client operation.
+    attributes:
+      - ref: gen_ai.system
+        requirement_level: required
+      - ref: gen_ai.request.model
+        requirement_level: required
