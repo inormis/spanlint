@@ -19,13 +19,16 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Topic :: Software Development :: Quality Assurance",
 ]
-dependencies = []
+dependencies = [
+    "PyYAML>=6.0",
+]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=8.0",
     "mypy>=1.11",
     "ruff>=0.6",
+    "types-PyYAML",
 ]
 
 [tool.hatch.build.targets.wheel]
