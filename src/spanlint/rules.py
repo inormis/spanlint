@@ -19,5 +19,21 @@ def gen_ai_system_required(span: Span, registry: Registry) -> list[Finding]:
     ]
 
 
+def gen_ai_operation_name_enum(span: Span, registry: Registry) -> list[Finding]:
+    value = span.attributes.get("gen_ai.operation.name")
+    if not isinstance(value, str):
+        return []
+    attr = registry.attribute("gen_ai.operation.name")
+    if attr is None or attr.type != "enum" or value in attr.enum_members:
+        return []
+    return [
+        Finding(
+            rule="gen_ai.operation.name.enum",
+            span=span.name,
+            message=f"gen_ai.operation.name={value!r} is not a known operation",
+        )
+    ]
+
+
 def _has_gen_ai_attributes(span: Span) -> bool:
     return any(k.startswith("gen_ai.") for k in span.attributes)

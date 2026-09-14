@@ -25,6 +25,27 @@ groups:
         stability: development
         type: int
         brief: Number of tokens used in the prompt.
+      - id: gen_ai.operation.name
+        stability: development
+        type:
+          members:
+            - id: chat
+              value: chat
+              brief: Chat completion operation.
+              stability: development
+            - id: text_completion
+              value: text_completion
+              brief: Text completion operation.
+              stability: development
+            - id: embeddings
+              value: embeddings
+              brief: Embeddings operation.
+              stability: development
+            - id: generate_content
+              value: generate_content
+              brief: Multimodal content generation.
+              stability: development
+        brief: The name of the operation being performed.
 
   - id: span.gen_ai.client
     type: span

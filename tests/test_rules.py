@@ -2,7 +2,7 @@ from pathlib import Path
 
 from spanlint.model import AttributeValue, Span, SpanKind
 from spanlint.registry import Registry, load_registry
-from spanlint.rules import gen_ai_system_required
+from spanlint.rules import gen_ai_operation_name_enum, gen_ai_system_required
 
 FIXTURES = Path(__file__).parent / "fixtures"
 
@@ -41,3 +41,21 @@ def test_non_gen_ai_span_is_not_flagged() -> None:
 
 def test_span_with_no_attributes_is_not_flagged() -> None:
     assert gen_ai_system_required(_span(), _registry()) == []
+
+
+def test_operation_name_known_value_passes() -> None:
+    span = _span({"gen_ai.operation.name": "chat"})
+    assert gen_ai_operation_name_enum(span, _registry()) == []
+
+
+def test_operation_name_unknown_value_is_flagged() -> None:
+    span = _span({"gen_ai.operation.name": "chit_chat"})
+    findings = gen_ai_operation_name_enum(span, _registry())
+    assert len(findings) == 1
+    assert findings[0].rule == "gen_ai.operation.name.enum"
+    assert "chit_chat" in findings[0].message
+
+
+def test_operation_name_missing_is_not_flagged() -> None:
+    span = _span({"gen_ai.system": "openai"})
+    assert gen_ai_operation_name_enum(span, _registry()) == []
