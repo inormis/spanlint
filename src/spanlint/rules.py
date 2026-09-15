@@ -36,33 +36,25 @@ def gen_ai_operation_name_enum(span: Span, registry: Registry) -> list[Finding]:
 
 
 def gen_ai_request_model_type(span: Span, registry: Registry) -> list[Finding]:
-    if "gen_ai.request.model" not in span.attributes:
-        return []
-    value = span.attributes["gen_ai.request.model"]
-    attr = registry.attribute("gen_ai.request.model")
-    if attr is None or attr.type != "string" or isinstance(value, str):
-        return []
-    return [
-        Finding(
-            rule="gen_ai.request.model.type",
-            span=span.name,
-            message="gen_ai.request.model must be a string",
-        )
-    ]
+    return _check_attribute_type(span, registry, "gen_ai.request.model")
 
 
 def gen_ai_response_model_type(span: Span, registry: Registry) -> list[Finding]:
-    if "gen_ai.response.model" not in span.attributes:
+    return _check_attribute_type(span, registry, "gen_ai.response.model")
+
+
+def _check_attribute_type(span: Span, registry: Registry, name: str) -> list[Finding]:
+    if name not in span.attributes:
         return []
-    value = span.attributes["gen_ai.response.model"]
-    attr = registry.attribute("gen_ai.response.model")
+    value = span.attributes[name]
+    attr = registry.attribute(name)
     if attr is None or attr.type != "string" or isinstance(value, str):
         return []
     return [
         Finding(
-            rule="gen_ai.response.model.type",
+            rule=f"{name}.type",
             span=span.name,
-            message="gen_ai.response.model must be a string",
+            message=f"{name} must be a string",
         )
     ]
 
