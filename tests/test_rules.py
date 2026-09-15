@@ -2,7 +2,11 @@ from pathlib import Path
 
 from spanlint.model import AttributeValue, Span, SpanKind
 from spanlint.registry import Registry, load_registry
-from spanlint.rules import gen_ai_operation_name_enum, gen_ai_system_required
+from spanlint.rules import (
+    gen_ai_operation_name_enum,
+    gen_ai_request_model_type,
+    gen_ai_system_required,
+)
 
 FIXTURES = Path(__file__).parent / "fixtures"
 
@@ -59,3 +63,20 @@ def test_operation_name_unknown_value_is_flagged() -> None:
 def test_operation_name_missing_is_not_flagged() -> None:
     span = _span({"gen_ai.system": "openai"})
     assert gen_ai_operation_name_enum(span, _registry()) == []
+
+
+def test_request_model_string_passes() -> None:
+    span = _span({"gen_ai.request.model": "gpt-4"})
+    assert gen_ai_request_model_type(span, _registry()) == []
+
+
+def test_request_model_non_string_is_flagged() -> None:
+    span = _span({"gen_ai.request.model": 42})
+    findings = gen_ai_request_model_type(span, _registry())
+    assert len(findings) == 1
+    assert findings[0].rule == "gen_ai.request.model.type"
+
+
+def test_request_model_missing_is_not_flagged() -> None:
+    span = _span({"gen_ai.system": "openai"})
+    assert gen_ai_request_model_type(span, _registry()) == []
