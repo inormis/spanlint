@@ -51,5 +51,21 @@ def gen_ai_request_model_type(span: Span, registry: Registry) -> list[Finding]:
     ]
 
 
+def gen_ai_response_model_type(span: Span, registry: Registry) -> list[Finding]:
+    if "gen_ai.response.model" not in span.attributes:
+        return []
+    value = span.attributes["gen_ai.response.model"]
+    attr = registry.attribute("gen_ai.response.model")
+    if attr is None or attr.type != "string" or isinstance(value, str):
+        return []
+    return [
+        Finding(
+            rule="gen_ai.response.model.type",
+            span=span.name,
+            message="gen_ai.response.model must be a string",
+        )
+    ]
+
+
 def _has_gen_ai_attributes(span: Span) -> bool:
     return any(k.startswith("gen_ai.") for k in span.attributes)

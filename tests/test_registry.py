@@ -10,6 +10,7 @@ def test_loads_attributes_from_file() -> None:
     assert set(reg.attributes) == {
         "gen_ai.system",
         "gen_ai.request.model",
+        "gen_ai.response.model",
         "gen_ai.usage.input_tokens",
         "gen_ai.operation.name",
     }
@@ -43,4 +44,4 @@ def test_loads_from_directory() -> None:
 
 def test_span_group_refs_are_ignored() -> None:
     reg = load_registry(FIXTURES / "gen_ai.yaml")
-    assert len(reg.attributes) == 4
+    assert len(reg.attributes) == 5
