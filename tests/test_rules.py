@@ -4,6 +4,7 @@ from spanlint.model import AttributeValue, Span, SpanKind
 from spanlint.registry import Registry, load_registry
 from spanlint.rules import (
     gen_ai_operation_name_enum,
+    gen_ai_request_max_tokens_type,
     gen_ai_request_model_type,
     gen_ai_request_temperature_type,
     gen_ai_request_top_p_type,
@@ -134,3 +135,27 @@ def test_request_top_p_non_double_is_flagged() -> None:
 def test_request_top_p_missing_is_not_flagged() -> None:
     span = _span({"gen_ai.system": "openai"})
     assert gen_ai_request_top_p_type(span, _registry()) == []
+
+
+def test_request_max_tokens_int_passes() -> None:
+    span = _span({"gen_ai.request.max_tokens": 256})
+    assert gen_ai_request_max_tokens_type(span, _registry()) == []
+
+
+def test_request_max_tokens_float_is_flagged() -> None:
+    span = _span({"gen_ai.request.max_tokens": 256.0})
+    findings = gen_ai_request_max_tokens_type(span, _registry())
+    assert len(findings) == 1
+    assert findings[0].rule == "gen_ai.request.max_tokens.type"
+
+
+def test_request_max_tokens_bool_is_flagged() -> None:
+    span = _span({"gen_ai.request.max_tokens": True})
+    findings = gen_ai_request_max_tokens_type(span, _registry())
+    assert len(findings) == 1
+    assert findings[0].rule == "gen_ai.request.max_tokens.type"
+
+
+def test_request_max_tokens_missing_is_not_flagged() -> None:
+    span = _span({"gen_ai.system": "openai"})
+    assert gen_ai_request_max_tokens_type(span, _registry()) == []

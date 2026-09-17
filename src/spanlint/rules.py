@@ -51,6 +51,10 @@ def gen_ai_request_top_p_type(span: Span, registry: Registry) -> list[Finding]:
     return _check_attribute_type(span, registry, "gen_ai.request.top_p")
 
 
+def gen_ai_request_max_tokens_type(span: Span, registry: Registry) -> list[Finding]:
+    return _check_attribute_type(span, registry, "gen_ai.request.max_tokens")
+
+
 def _check_attribute_type(span: Span, registry: Registry, name: str) -> list[Finding]:
     if name not in span.attributes:
         return []
@@ -72,6 +76,8 @@ def _matches_type(value: AttributeValue, type_str: str) -> bool:
         return isinstance(value, str)
     if type_str == "double":
         return isinstance(value, float)
+    if type_str == "int":
+        return isinstance(value, int) and not isinstance(value, bool)
     return True
 
 
