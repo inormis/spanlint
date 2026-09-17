@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from spanlint.model import Span
+from spanlint.model import AttributeValue, Span
 from spanlint.registry import Registry
 from spanlint.validate import Finding
 
@@ -43,20 +43,32 @@ def gen_ai_response_model_type(span: Span, registry: Registry) -> list[Finding]:
     return _check_attribute_type(span, registry, "gen_ai.response.model")
 
 
+def gen_ai_request_temperature_type(span: Span, registry: Registry) -> list[Finding]:
+    return _check_attribute_type(span, registry, "gen_ai.request.temperature")
+
+
 def _check_attribute_type(span: Span, registry: Registry, name: str) -> list[Finding]:
     if name not in span.attributes:
         return []
     value = span.attributes[name]
     attr = registry.attribute(name)
-    if attr is None or attr.type != "string" or isinstance(value, str):
+    if attr is None or _matches_type(value, attr.type):
         return []
     return [
         Finding(
             rule=f"{name}.type",
             span=span.name,
-            message=f"{name} must be a string",
+            message=f"{name} must be a {attr.type}",
         )
     ]
+
+
+def _matches_type(value: AttributeValue, type_str: str) -> bool:
+    if type_str == "string":
+        return isinstance(value, str)
+    if type_str == "double":
+        return isinstance(value, float)
+    return True
 
 
 def _has_gen_ai_attributes(span: Span) -> bool:

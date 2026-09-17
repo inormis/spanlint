@@ -5,6 +5,7 @@ from spanlint.registry import Registry, load_registry
 from spanlint.rules import (
     gen_ai_operation_name_enum,
     gen_ai_request_model_type,
+    gen_ai_request_temperature_type,
     gen_ai_response_model_type,
     gen_ai_system_required,
 )
@@ -98,3 +99,20 @@ def test_response_model_non_string_is_flagged() -> None:
 def test_response_model_missing_is_not_flagged() -> None:
     span = _span({"gen_ai.system": "openai"})
     assert gen_ai_response_model_type(span, _registry()) == []
+
+
+def test_request_temperature_double_passes() -> None:
+    span = _span({"gen_ai.request.temperature": 0.7})
+    assert gen_ai_request_temperature_type(span, _registry()) == []
+
+
+def test_request_temperature_non_double_is_flagged() -> None:
+    span = _span({"gen_ai.request.temperature": "hot"})
+    findings = gen_ai_request_temperature_type(span, _registry())
+    assert len(findings) == 1
+    assert findings[0].rule == "gen_ai.request.temperature.type"
+
+
+def test_request_temperature_missing_is_not_flagged() -> None:
+    span = _span({"gen_ai.system": "openai"})
+    assert gen_ai_request_temperature_type(span, _registry()) == []
