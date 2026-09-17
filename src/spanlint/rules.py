@@ -47,6 +47,10 @@ def gen_ai_request_temperature_type(span: Span, registry: Registry) -> list[Find
     return _check_attribute_type(span, registry, "gen_ai.request.temperature")
 
 
+def gen_ai_request_top_p_type(span: Span, registry: Registry) -> list[Finding]:
+    return _check_attribute_type(span, registry, "gen_ai.request.top_p")
+
+
 def _check_attribute_type(span: Span, registry: Registry, name: str) -> list[Finding]:
     if name not in span.attributes:
         return []

@@ -6,6 +6,7 @@ from spanlint.rules import (
     gen_ai_operation_name_enum,
     gen_ai_request_model_type,
     gen_ai_request_temperature_type,
+    gen_ai_request_top_p_type,
     gen_ai_response_model_type,
     gen_ai_system_required,
 )
@@ -116,3 +117,20 @@ def test_request_temperature_non_double_is_flagged() -> None:
 def test_request_temperature_missing_is_not_flagged() -> None:
     span = _span({"gen_ai.system": "openai"})
     assert gen_ai_request_temperature_type(span, _registry()) == []
+
+
+def test_request_top_p_double_passes() -> None:
+    span = _span({"gen_ai.request.top_p": 0.9})
+    assert gen_ai_request_top_p_type(span, _registry()) == []
+
+
+def test_request_top_p_non_double_is_flagged() -> None:
+    span = _span({"gen_ai.request.top_p": "high"})
+    findings = gen_ai_request_top_p_type(span, _registry())
+    assert len(findings) == 1
+    assert findings[0].rule == "gen_ai.request.top_p.type"
+
+
+def test_request_top_p_missing_is_not_flagged() -> None:
+    span = _span({"gen_ai.system": "openai"})
+    assert gen_ai_request_top_p_type(span, _registry()) == []
