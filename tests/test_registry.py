@@ -11,6 +11,7 @@ def test_loads_attributes_from_file() -> None:
         "gen_ai.system",
         "gen_ai.request.model",
         "gen_ai.response.model",
+        "gen_ai.response.id",
         "gen_ai.request.temperature",
         "gen_ai.request.top_p",
         "gen_ai.request.max_tokens",
@@ -47,4 +48,4 @@ def test_loads_from_directory() -> None:
 
 def test_span_group_refs_are_ignored() -> None:
     reg = load_registry(FIXTURES / "gen_ai.yaml")
-    assert len(reg.attributes) == 8
+    assert len(reg.attributes) == 9

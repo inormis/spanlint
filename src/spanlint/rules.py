@@ -55,6 +55,10 @@ def gen_ai_request_max_tokens_type(span: Span, registry: Registry) -> list[Findi
     return _check_attribute_type(span, registry, "gen_ai.request.max_tokens")
 
 
+def gen_ai_response_id_type(span: Span, registry: Registry) -> list[Finding]:
+    return _check_attribute_type(span, registry, "gen_ai.response.id")
+
+
 def _check_attribute_type(span: Span, registry: Registry, name: str) -> list[Finding]:
     if name not in span.attributes:
         return []
