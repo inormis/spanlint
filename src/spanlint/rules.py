@@ -59,6 +59,10 @@ def gen_ai_response_id_type(span: Span, registry: Registry) -> list[Finding]:
     return _check_attribute_type(span, registry, "gen_ai.response.id")
 
 
+def gen_ai_response_finish_reasons_type(span: Span, registry: Registry) -> list[Finding]:
+    return _check_attribute_type(span, registry, "gen_ai.response.finish_reasons")
+
+
 def _check_attribute_type(span: Span, registry: Registry, name: str) -> list[Finding]:
     if name not in span.attributes:
         return []
@@ -82,6 +86,8 @@ def _matches_type(value: AttributeValue, type_str: str) -> bool:
         return isinstance(value, float)
     if type_str == "int":
         return isinstance(value, int) and not isinstance(value, bool)
+    if type_str == "string[]":
+        return isinstance(value, list) and all(isinstance(v, str) for v in value)
     return True
 
 

@@ -8,6 +8,7 @@ from spanlint.rules import (
     gen_ai_request_model_type,
     gen_ai_request_temperature_type,
     gen_ai_request_top_p_type,
+    gen_ai_response_finish_reasons_type,
     gen_ai_response_id_type,
     gen_ai_response_model_type,
     gen_ai_system_required,
@@ -177,3 +178,27 @@ def test_response_id_non_string_is_flagged() -> None:
 def test_response_id_missing_is_not_flagged() -> None:
     span = _span({"gen_ai.system": "openai"})
     assert gen_ai_response_id_type(span, _registry()) == []
+
+
+def test_response_finish_reasons_list_passes() -> None:
+    span = _span({"gen_ai.response.finish_reasons": ["stop", "length"]})
+    assert gen_ai_response_finish_reasons_type(span, _registry()) == []
+
+
+def test_response_finish_reasons_bare_string_is_flagged() -> None:
+    span = _span({"gen_ai.response.finish_reasons": "stop"})
+    findings = gen_ai_response_finish_reasons_type(span, _registry())
+    assert len(findings) == 1
+    assert findings[0].rule == "gen_ai.response.finish_reasons.type"
+
+
+def test_response_finish_reasons_list_of_ints_is_flagged() -> None:
+    span = _span({"gen_ai.response.finish_reasons": [1, 2]})
+    findings = gen_ai_response_finish_reasons_type(span, _registry())
+    assert len(findings) == 1
+    assert findings[0].rule == "gen_ai.response.finish_reasons.type"
+
+
+def test_response_finish_reasons_missing_is_not_flagged() -> None:
+    span = _span({"gen_ai.system": "openai"})
+    assert gen_ai_response_finish_reasons_type(span, _registry()) == []
