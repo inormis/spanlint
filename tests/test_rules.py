@@ -1,8 +1,9 @@
 from pathlib import Path
 
-from spanlint.model import AttributeValue, Span, SpanKind
+from spanlint.model import AttributeValue, Event, Span, SpanKind
 from spanlint.registry import Registry, load_registry
 from spanlint.rules import (
+    gen_ai_message_event_attribute_types,
     gen_ai_operation_name_enum,
     gen_ai_request_max_tokens_type,
     gen_ai_request_model_type,
@@ -21,13 +22,17 @@ def _registry() -> Registry:
     return load_registry(FIXTURES / "gen_ai.yaml")
 
 
-def _span(attrs: dict[str, AttributeValue] | None = None) -> Span:
+def _span(
+    attrs: dict[str, AttributeValue] | None = None,
+    events: list[Event] | None = None,
+) -> Span:
     return Span(
         name="chat",
         kind=SpanKind.CLIENT,
         start_time_unix_nano=0,
         end_time_unix_nano=1,
         attributes=dict(attrs or {}),
+        events=list(events or []),
     )
 
 
@@ -202,3 +207,47 @@ def test_response_finish_reasons_list_of_ints_is_flagged() -> None:
 def test_response_finish_reasons_missing_is_not_flagged() -> None:
     span = _span({"gen_ai.system": "openai"})
     assert gen_ai_response_finish_reasons_type(span, _registry()) == []
+
+
+def _event(name: str, attrs: dict[str, AttributeValue] | None = None) -> Event:
+    return Event(name=name, timestamp_unix_nano=0, attributes=dict(attrs or {}))
+
+
+def test_user_message_event_with_valid_system_passes() -> None:
+    span = _span(events=[_event("gen_ai.user.message", {"gen_ai.system": "openai"})])
+    assert gen_ai_message_event_attribute_types(span, _registry()) == []
+
+
+def test_system_message_event_with_valid_system_passes() -> None:
+    span = _span(events=[_event("gen_ai.system.message", {"gen_ai.system": "anthropic"})])
+    assert gen_ai_message_event_attribute_types(span, _registry()) == []
+
+
+def test_user_message_event_with_non_string_system_is_flagged() -> None:
+    span = _span(events=[_event("gen_ai.user.message", {"gen_ai.system": True})])
+    findings = gen_ai_message_event_attribute_types(span, _registry())
+    assert len(findings) == 1
+    assert findings[0].rule == "gen_ai.system.type"
+    assert "gen_ai.user.message" in findings[0].message
+
+
+def test_message_event_with_wrong_typed_known_attribute_is_flagged() -> None:
+    span = _span(events=[_event("gen_ai.system.message", {"gen_ai.request.max_tokens": True})])
+    findings = gen_ai_message_event_attribute_types(span, _registry())
+    assert len(findings) == 1
+    assert findings[0].rule == "gen_ai.request.max_tokens.type"
+
+
+def test_non_message_event_is_not_scanned() -> None:
+    span = _span(events=[_event("custom.event", {"gen_ai.system": 123})])
+    assert gen_ai_message_event_attribute_types(span, _registry()) == []
+
+
+def test_span_with_no_events_is_not_flagged() -> None:
+    span = _span({"gen_ai.system": "openai"})
+    assert gen_ai_message_event_attribute_types(span, _registry()) == []
+
+
+def test_message_event_with_unknown_attribute_is_not_flagged() -> None:
+    span = _span(events=[_event("gen_ai.user.message", {"role": "user"})])
+    assert gen_ai_message_event_attribute_types(span, _registry()) == []

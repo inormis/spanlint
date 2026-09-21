@@ -1,8 +1,10 @@
 from __future__ import annotations
 
-from spanlint.model import AttributeValue, Span
+from spanlint.model import AttributeValue, Event, Span
 from spanlint.registry import Registry
 from spanlint.validate import Finding
+
+_MESSAGE_EVENT_NAMES = frozenset({"gen_ai.user.message", "gen_ai.system.message"})
 
 
 def gen_ai_system_required(span: Span, registry: Registry) -> list[Finding]:
@@ -63,6 +65,16 @@ def gen_ai_response_finish_reasons_type(span: Span, registry: Registry) -> list[
     return _check_attribute_type(span, registry, "gen_ai.response.finish_reasons")
 
 
+def gen_ai_message_event_attribute_types(span: Span, registry: Registry) -> list[Finding]:
+    findings: list[Finding] = []
+    for event in span.events:
+        if event.name not in _MESSAGE_EVENT_NAMES:
+            continue
+        for name in event.attributes:
+            findings.extend(_check_event_attribute_type(span, event, registry, name))
+    return findings
+
+
 def _check_attribute_type(span: Span, registry: Registry, name: str) -> list[Finding]:
     if name not in span.attributes:
         return []
@@ -79,6 +91,22 @@ def _check_attribute_type(span: Span, registry: Registry, name: str) -> list[Fin
     ]
 
 
+def _check_event_attribute_type(
+    span: Span, event: Event, registry: Registry, name: str
+) -> list[Finding]:
+    value = event.attributes[name]
+    attr = registry.attribute(name)
+    if attr is None or _matches_type(value, attr.type):
+        return []
+    return [
+        Finding(
+            rule=f"{name}.type",
+            span=span.name,
+            message=f"{name} on {event.name} event must be a {attr.type}",
+        )
+    ]
+
+
 def _matches_type(value: AttributeValue, type_str: str) -> bool:
     if type_str == "string":
         return isinstance(value, str)
@@ -88,6 +116,8 @@ def _matches_type(value: AttributeValue, type_str: str) -> bool:
         return isinstance(value, int) and not isinstance(value, bool)
     if type_str == "string[]":
         return isinstance(value, list) and all(isinstance(v, str) for v in value)
+    if type_str == "enum":
+        return isinstance(value, str)
     return True
 
 
