@@ -45,3 +45,17 @@ class Span:
     attributes: dict[str, AttributeValue] = field(default_factory=dict)
     events: list[Event] = field(default_factory=list)
     status: Status = field(default_factory=Status)
+
+
+class InstrumentType(Enum):
+    COUNTER = "counter"
+    UPDOWN_COUNTER = "updown_counter"
+    HISTOGRAM = "histogram"
+    GAUGE = "gauge"
+
+
+@dataclass
+class Metric:
+    name: str
+    instrument: InstrumentType
+    unit: str = ""

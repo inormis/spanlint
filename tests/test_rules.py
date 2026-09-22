@@ -47,7 +47,7 @@ def test_gen_ai_system_missing_on_gen_ai_span_is_flagged() -> None:
     findings = gen_ai_system_required(span, _registry())
     assert len(findings) == 1
     assert findings[0].rule == "gen_ai.system.required"
-    assert findings[0].span == "chat"
+    assert findings[0].target == "chat"
 
 
 def test_non_gen_ai_span_is_not_flagged() -> None:

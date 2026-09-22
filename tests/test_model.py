@@ -1,4 +1,4 @@
-from spanlint.model import Event, Span, SpanKind, Status, StatusCode
+from spanlint.model import Event, InstrumentType, Metric, Span, SpanKind, Status, StatusCode
 
 
 def test_span_defaults() -> None:
@@ -49,3 +49,20 @@ def test_event_defaults() -> None:
 def test_enum_values() -> None:
     assert SpanKind.CLIENT.value == "client"
     assert StatusCode.ERROR.value == "error"
+
+
+def test_metric_defaults() -> None:
+    m = Metric(name="gen_ai.client.token.usage", instrument=InstrumentType.HISTOGRAM)
+    assert m.unit == ""
+    assert m.instrument is InstrumentType.HISTOGRAM
+
+
+def test_metric_equality() -> None:
+    a = Metric(name="x", instrument=InstrumentType.COUNTER, unit="1")
+    b = Metric(name="x", instrument=InstrumentType.COUNTER, unit="1")
+    assert a == b
+
+
+def test_instrument_type_values() -> None:
+    assert InstrumentType.HISTOGRAM.value == "histogram"
+    assert InstrumentType.UPDOWN_COUNTER.value == "updown_counter"

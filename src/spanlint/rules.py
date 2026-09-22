@@ -15,7 +15,7 @@ def gen_ai_system_required(span: Span, registry: Registry) -> list[Finding]:
     return [
         Finding(
             rule="gen_ai.system.required",
-            span=span.name,
+            target=span.name,
             message="gen_ai.system is required on GenAI spans",
         )
     ]
@@ -31,7 +31,7 @@ def gen_ai_operation_name_enum(span: Span, registry: Registry) -> list[Finding]:
     return [
         Finding(
             rule="gen_ai.operation.name.enum",
-            span=span.name,
+            target=span.name,
             message=f"gen_ai.operation.name={value!r} is not a known operation",
         )
     ]
@@ -95,7 +95,7 @@ def _check_attribute_type(span: Span, registry: Registry, name: str) -> list[Fin
     return [
         Finding(
             rule=f"{name}.type",
-            span=span.name,
+            target=span.name,
             message=f"{name} must be a {attr.type}",
         )
     ]
@@ -111,7 +111,7 @@ def _check_event_attribute_type(
     return [
         Finding(
             rule=f"{name}.type",
-            span=span.name,
+            target=span.name,
             message=f"{name} on {event.name} event must be a {attr.type}",
         )
     ]
