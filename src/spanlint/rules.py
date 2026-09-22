@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from spanlint.model import AttributeValue, Event, Span
+from spanlint.model import AttributeValue, Event, InstrumentType, Metric, Span
 from spanlint.registry import Registry
 from spanlint.validate import Finding
 
@@ -82,6 +82,31 @@ def gen_ai_choice_event_attribute_types(span: Span, registry: Registry) -> list[
             continue
         for name in event.attributes:
             findings.extend(_check_event_attribute_type(span, event, registry, name))
+    return findings
+
+
+def gen_ai_client_token_usage_metric(metric: Metric, registry: Registry) -> list[Finding]:
+    if metric.name != "gen_ai.client.token.usage":
+        return []
+    findings: list[Finding] = []
+    if metric.instrument is not InstrumentType.HISTOGRAM:
+        findings.append(
+            Finding(
+                rule="gen_ai.client.token.usage.instrument",
+                target=metric.name,
+                message=(
+                    f"gen_ai.client.token.usage must be a histogram, got {metric.instrument.value}"
+                ),
+            )
+        )
+    if metric.unit != "{token}":
+        findings.append(
+            Finding(
+                rule="gen_ai.client.token.usage.unit",
+                target=metric.name,
+                message=f"gen_ai.client.token.usage unit must be '{{token}}', got {metric.unit!r}",
+            )
+        )
     return findings
 
 

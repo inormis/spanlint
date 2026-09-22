@@ -1,9 +1,10 @@
 from pathlib import Path
 
-from spanlint.model import AttributeValue, Event, Span, SpanKind
+from spanlint.model import AttributeValue, Event, InstrumentType, Metric, Span, SpanKind
 from spanlint.registry import Registry, load_registry
 from spanlint.rules import (
     gen_ai_choice_event_attribute_types,
+    gen_ai_client_token_usage_metric,
     gen_ai_message_event_attribute_types,
     gen_ai_operation_name_enum,
     gen_ai_request_max_tokens_type,
@@ -287,3 +288,49 @@ def test_span_with_no_events_is_not_flagged_by_choice_rule() -> None:
 def test_choice_event_with_unknown_attribute_is_not_flagged() -> None:
     span = _span(events=[_event("gen_ai.choice", {"index": 0})])
     assert gen_ai_choice_event_attribute_types(span, _registry()) == []
+
+
+def test_token_usage_histogram_with_token_unit_passes() -> None:
+    m = Metric(
+        name="gen_ai.client.token.usage",
+        instrument=InstrumentType.HISTOGRAM,
+        unit="{token}",
+    )
+    assert gen_ai_client_token_usage_metric(m, _registry()) == []
+
+
+def test_token_usage_wrong_instrument_is_flagged() -> None:
+    m = Metric(
+        name="gen_ai.client.token.usage",
+        instrument=InstrumentType.COUNTER,
+        unit="{token}",
+    )
+    findings = gen_ai_client_token_usage_metric(m, _registry())
+    assert len(findings) == 1
+    assert findings[0].rule == "gen_ai.client.token.usage.instrument"
+    assert "counter" in findings[0].message
+
+
+def test_token_usage_wrong_unit_is_flagged() -> None:
+    m = Metric(
+        name="gen_ai.client.token.usage",
+        instrument=InstrumentType.HISTOGRAM,
+        unit="tokens",
+    )
+    findings = gen_ai_client_token_usage_metric(m, _registry())
+    assert len(findings) == 1
+    assert findings[0].rule == "gen_ai.client.token.usage.unit"
+
+
+def test_token_usage_both_wrong_produces_two_findings() -> None:
+    m = Metric(name="gen_ai.client.token.usage", instrument=InstrumentType.COUNTER, unit="")
+    findings = gen_ai_client_token_usage_metric(m, _registry())
+    assert {f.rule for f in findings} == {
+        "gen_ai.client.token.usage.instrument",
+        "gen_ai.client.token.usage.unit",
+    }
+
+
+def test_token_usage_rule_ignores_other_metrics() -> None:
+    m = Metric(name="some.other.metric", instrument=InstrumentType.COUNTER)
+    assert gen_ai_client_token_usage_metric(m, _registry()) == []
