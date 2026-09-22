@@ -3,6 +3,7 @@ from pathlib import Path
 from spanlint.model import AttributeValue, Event, Span, SpanKind
 from spanlint.registry import Registry, load_registry
 from spanlint.rules import (
+    gen_ai_choice_event_attribute_types,
     gen_ai_message_event_attribute_types,
     gen_ai_operation_name_enum,
     gen_ai_request_max_tokens_type,
@@ -251,3 +252,38 @@ def test_span_with_no_events_is_not_flagged() -> None:
 def test_message_event_with_unknown_attribute_is_not_flagged() -> None:
     span = _span(events=[_event("gen_ai.user.message", {"role": "user"})])
     assert gen_ai_message_event_attribute_types(span, _registry()) == []
+
+
+def test_choice_event_with_valid_system_passes() -> None:
+    span = _span(events=[_event("gen_ai.choice", {"gen_ai.system": "openai"})])
+    assert gen_ai_choice_event_attribute_types(span, _registry()) == []
+
+
+def test_choice_event_with_non_string_system_is_flagged() -> None:
+    span = _span(events=[_event("gen_ai.choice", {"gen_ai.system": 42})])
+    findings = gen_ai_choice_event_attribute_types(span, _registry())
+    assert len(findings) == 1
+    assert findings[0].rule == "gen_ai.system.type"
+    assert "gen_ai.choice" in findings[0].message
+
+
+def test_choice_event_with_wrong_typed_finish_reasons_is_flagged() -> None:
+    span = _span(events=[_event("gen_ai.choice", {"gen_ai.response.finish_reasons": "stop"})])
+    findings = gen_ai_choice_event_attribute_types(span, _registry())
+    assert len(findings) == 1
+    assert findings[0].rule == "gen_ai.response.finish_reasons.type"
+
+
+def test_message_event_is_not_scanned_by_choice_rule() -> None:
+    span = _span(events=[_event("gen_ai.user.message", {"gen_ai.system": 123})])
+    assert gen_ai_choice_event_attribute_types(span, _registry()) == []
+
+
+def test_span_with_no_events_is_not_flagged_by_choice_rule() -> None:
+    span = _span({"gen_ai.system": "openai"})
+    assert gen_ai_choice_event_attribute_types(span, _registry()) == []
+
+
+def test_choice_event_with_unknown_attribute_is_not_flagged() -> None:
+    span = _span(events=[_event("gen_ai.choice", {"index": 0})])
+    assert gen_ai_choice_event_attribute_types(span, _registry()) == []

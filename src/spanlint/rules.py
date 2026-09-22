@@ -75,6 +75,16 @@ def gen_ai_message_event_attribute_types(span: Span, registry: Registry) -> list
     return findings
 
 
+def gen_ai_choice_event_attribute_types(span: Span, registry: Registry) -> list[Finding]:
+    findings: list[Finding] = []
+    for event in span.events:
+        if event.name != "gen_ai.choice":
+            continue
+        for name in event.attributes:
+            findings.extend(_check_event_attribute_type(span, event, registry, name))
+    return findings
+
+
 def _check_attribute_type(span: Span, registry: Registry, name: str) -> list[Finding]:
     if name not in span.attributes:
         return []
