@@ -110,6 +110,32 @@ def gen_ai_client_token_usage_metric(metric: Metric, registry: Registry) -> list
     return findings
 
 
+def gen_ai_client_operation_duration_metric(metric: Metric, registry: Registry) -> list[Finding]:
+    if metric.name != "gen_ai.client.operation.duration":
+        return []
+    findings: list[Finding] = []
+    if metric.instrument is not InstrumentType.HISTOGRAM:
+        findings.append(
+            Finding(
+                rule="gen_ai.client.operation.duration.instrument",
+                target=metric.name,
+                message=(
+                    f"gen_ai.client.operation.duration must be a histogram, "
+                    f"got {metric.instrument.value}"
+                ),
+            )
+        )
+    if metric.unit != "s":
+        findings.append(
+            Finding(
+                rule="gen_ai.client.operation.duration.unit",
+                target=metric.name,
+                message=(f"gen_ai.client.operation.duration unit must be 's', got {metric.unit!r}"),
+            )
+        )
+    return findings
+
+
 def _check_attribute_type(span: Span, registry: Registry, name: str) -> list[Finding]:
     if name not in span.attributes:
         return []

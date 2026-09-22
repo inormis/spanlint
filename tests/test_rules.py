@@ -4,6 +4,7 @@ from spanlint.model import AttributeValue, Event, InstrumentType, Metric, Span, 
 from spanlint.registry import Registry, load_registry
 from spanlint.rules import (
     gen_ai_choice_event_attribute_types,
+    gen_ai_client_operation_duration_metric,
     gen_ai_client_token_usage_metric,
     gen_ai_message_event_attribute_types,
     gen_ai_operation_name_enum,
@@ -334,3 +335,52 @@ def test_token_usage_both_wrong_produces_two_findings() -> None:
 def test_token_usage_rule_ignores_other_metrics() -> None:
     m = Metric(name="some.other.metric", instrument=InstrumentType.COUNTER)
     assert gen_ai_client_token_usage_metric(m, _registry()) == []
+
+
+def test_operation_duration_histogram_with_second_unit_passes() -> None:
+    m = Metric(
+        name="gen_ai.client.operation.duration",
+        instrument=InstrumentType.HISTOGRAM,
+        unit="s",
+    )
+    assert gen_ai_client_operation_duration_metric(m, _registry()) == []
+
+
+def test_operation_duration_wrong_instrument_is_flagged() -> None:
+    m = Metric(
+        name="gen_ai.client.operation.duration",
+        instrument=InstrumentType.GAUGE,
+        unit="s",
+    )
+    findings = gen_ai_client_operation_duration_metric(m, _registry())
+    assert len(findings) == 1
+    assert findings[0].rule == "gen_ai.client.operation.duration.instrument"
+    assert "gauge" in findings[0].message
+
+
+def test_operation_duration_wrong_unit_is_flagged() -> None:
+    m = Metric(
+        name="gen_ai.client.operation.duration",
+        instrument=InstrumentType.HISTOGRAM,
+        unit="ms",
+    )
+    findings = gen_ai_client_operation_duration_metric(m, _registry())
+    assert len(findings) == 1
+    assert findings[0].rule == "gen_ai.client.operation.duration.unit"
+
+
+def test_operation_duration_both_wrong_produces_two_findings() -> None:
+    m = Metric(
+        name="gen_ai.client.operation.duration",
+        instrument=InstrumentType.COUNTER,
+    )
+    findings = gen_ai_client_operation_duration_metric(m, _registry())
+    assert {f.rule for f in findings} == {
+        "gen_ai.client.operation.duration.instrument",
+        "gen_ai.client.operation.duration.unit",
+    }
+
+
+def test_operation_duration_rule_ignores_other_metrics() -> None:
+    m = Metric(name="gen_ai.client.token.usage", instrument=InstrumentType.HISTOGRAM)
+    assert gen_ai_client_operation_duration_metric(m, _registry()) == []
