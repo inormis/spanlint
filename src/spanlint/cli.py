@@ -14,6 +14,7 @@ def main(argv: list[str] | None = None) -> int:
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="spanlint")
     parser.add_argument("--version", action="version", version=version("spanlint"))
+    parser.add_argument("--format", choices=("text", "json"), default="text")
     return parser
 
 
