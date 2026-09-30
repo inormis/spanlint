@@ -1,0 +1,68 @@
+{
+  "resourceSpans": [
+    {
+      "resource": {
+        "attributes": [
+          {"key": "service.name", "value": {"stringValue": "example-app"}}
+        ]
+      },
+      "scopeSpans": [
+        {
+          "scope": {
+            "name": "openai",
+            "version": "1.55.0"
+          },
+          "spans": [
+            {
+              "traceId": "5b8aa5a2d2c872e8321cf37308d69df2",
+              "spanId": "051581bf3cb55c13",
+              "name": "chat gpt-4o-mini",
+              "kind": 3,
+              "startTimeUnixNano": "1735689600000000000",
+              "endTimeUnixNano": "1735689600812000000",
+              "attributes": [
+                {"key": "gen_ai.system", "value": {"stringValue": "openai"}},
+                {"key": "gen_ai.operation.name", "value": {"stringValue": "chat"}},
+                {"key": "gen_ai.request.model", "value": {"stringValue": "gpt-4o-mini"}},
+                {"key": "gen_ai.request.temperature", "value": {"doubleValue": 0.7}},
+                {"key": "gen_ai.request.max_tokens", "value": {"intValue": "256"}},
+                {"key": "gen_ai.response.model", "value": {"stringValue": "gpt-4o-mini-2024-07-18"}},
+                {"key": "gen_ai.response.id", "value": {"stringValue": "chatcmpl-ABc123"}},
+                {
+                  "key": "gen_ai.response.finish_reasons",
+                  "value": {
+                    "arrayValue": {
+                      "values": [{"stringValue": "stop"}]
+                    }
+                  }
+                },
+                {"key": "server.address", "value": {"stringValue": "api.openai.com"}},
+                {"key": "server.port", "value": {"intValue": "443"}}
+              ],
+              "events": [
+                {
+                  "name": "gen_ai.user.message",
+                  "timeUnixNano": "1735689600100000000",
+                  "attributes": [
+                    {"key": "gen_ai.system", "value": {"stringValue": "openai"}},
+                    {"key": "role", "value": {"stringValue": "user"}}
+                  ]
+                },
+                {
+                  "name": "gen_ai.choice",
+                  "timeUnixNano": "1735689600800000000",
+                  "attributes": [
+                    {"key": "gen_ai.system", "value": {"stringValue": "openai"}},
+                    {"key": "index", "value": {"intValue": "0"}},
+                    {"key": "finish_reason", "value": {"stringValue": "stop"}}
+                  ]
+                }
+              ],
+              "status": {"code": 1}
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
