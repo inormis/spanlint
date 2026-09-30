@@ -40,12 +40,13 @@ def parse_otlp_json(data: dict[str, Any]) -> list[Span]:
     spans: list[Span] = []
     for rs in data.get("resourceSpans", []):
         for ss in rs.get("scopeSpans", []):
+            scope_name = ss.get("scope", {}).get("name") or None
             for raw in ss.get("spans", []):
-                spans.append(_parse_span(raw))
+                spans.append(_parse_span(raw, scope_name))
     return spans
 
 
-def _parse_span(raw: dict[str, Any]) -> Span:
+def _parse_span(raw: dict[str, Any], scope_name: str | None) -> Span:
     if "name" not in raw:
         raise ValueError("span is missing name")
     return Span(
@@ -56,6 +57,7 @@ def _parse_span(raw: dict[str, Any]) -> Span:
         attributes=_attributes(raw.get("attributes", [])),
         events=[_parse_event(e) for e in raw.get("events", [])],
         status=_status(raw.get("status", {})),
+        instrumentation_scope=scope_name,
     )
 
 

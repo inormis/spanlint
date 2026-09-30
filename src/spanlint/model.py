@@ -45,6 +45,7 @@ class Span:
     attributes: dict[str, AttributeValue] = field(default_factory=dict)
     events: list[Event] = field(default_factory=list)
     status: Status = field(default_factory=Status)
+    instrumentation_scope: str | None = None
 
 
 class InstrumentType(Enum):

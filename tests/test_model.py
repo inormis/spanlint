@@ -11,6 +11,7 @@ def test_span_defaults() -> None:
     assert span.attributes == {}
     assert span.events == []
     assert span.status == Status(code=StatusCode.UNSET, description="")
+    assert span.instrumentation_scope is None
 
 
 def test_span_with_attributes_and_events() -> None:

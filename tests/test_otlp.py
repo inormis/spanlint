@@ -41,6 +41,31 @@ def test_minimal_span() -> None:
     assert s.attributes == {}
     assert s.events == []
     assert s.status.code is StatusCode.UNSET
+    assert s.instrumentation_scope is None
+
+
+def test_instrumentation_scope_from_scope_name() -> None:
+    data = {
+        "resourceSpans": [
+            {
+                "scopeSpans": [
+                    {
+                        "scope": {"name": "openai", "version": "1.2.3"},
+                        "spans": [
+                            {
+                                "name": "chat",
+                                "kind": 3,
+                                "startTimeUnixNano": "0",
+                                "endTimeUnixNano": "1",
+                            }
+                        ],
+                    }
+                ]
+            }
+        ]
+    }
+    spans = parse_otlp_json(data)
+    assert spans[0].instrumentation_scope == "openai"
 
 
 def test_span_kind_mapping() -> None:
