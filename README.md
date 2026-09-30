@@ -24,6 +24,19 @@ from it. spanlint looks at the other end, the spans and metrics a running
 application produces. If you are writing conventions, you want Weaver. If
 you are checking whether your instrumentation follows them, this.
 
+## Supported frameworks
+
+Framework detection is what tells spanlint which spans came from where, so
+per-framework conformance can be reported without mixing everything together.
+
+- **openai-python**: spans emitted directly by the OpenAI Python SDK, and
+  by the OpenTelemetry contrib instrumentation
+  (`opentelemetry-instrumentation-openai`, including the `_v2` scope).
+  Identification falls back to `gen_ai.system=openai` when the instrumentation
+  scope name is not one of the expected values.
+
+More adapters land as work on them starts.
+
 ## Status
 
 Nothing works yet. No release, no CLI, no API. Currently building the span
