@@ -7,7 +7,7 @@ Most AI frameworks now emit OpenTelemetry spans for model calls, and the
 [GenAI semantic conventions](https://opentelemetry.io/docs/specs/semconv/gen-ai/)
 say what those spans are supposed to contain. The two do not always agree.
 Attributes get left out. Old names stick around long after the spec renames
-them. Token metrics turn up withot the right unit. Required events are
+them. Token metrics turn up without the right unit. Required events are
 missing entirely.
 
 You normally find this out from a dashboard, when a panel is empty and
@@ -39,7 +39,17 @@ More adapters land as work on them starts.
 
 ## Status
 
-Nothing works yet. No release, no CLI, no API. Currently building the span
-model and the first validation rules.
+Early, but it runs. You can feed it an OTLP JSON export and get a list of
+findings back, in text or JSON. There are a dozen rules so far, all for the
+GenAI conventions: attribute types, the operation name enum, the two
+message/choice events, and the token/duration histograms. The only
+framework it recognises today is the OpenAI Python SDK. There is also a
+pytest fixture that grabs whatever spans your test emits so you can lint
+them in place.
+
+Nothing is on PyPI yet. 0.1.0 is cut in the changelog and goes out as soon
+as the publishing side is wired up. After that: a proper `spanlint check`
+subcommand, more framework adapters, and a report that shows per framework
+where the telemetry drifts from the spec.
 
 Apache-2.0
