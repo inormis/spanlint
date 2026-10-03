@@ -30,11 +30,15 @@ spanlint = "spanlint.cli:main"
 spanlint = "spanlint.pytest_plugin"
 
 [project.optional-dependencies]
+pytest = [
+    "opentelemetry-sdk>=1.27",
+]
 dev = [
     "pytest>=8.0",
     "mypy>=1.11",
     "ruff>=0.6",
     "types-PyYAML",
+    "opentelemetry-sdk>=1.27",
 ]
 
 [tool.hatch.build.targets.wheel]
