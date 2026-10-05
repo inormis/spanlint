@@ -6,6 +6,32 @@ from spanlint.validate import Finding
 
 _MESSAGE_EVENT_NAMES = frozenset({"gen_ai.user.message", "gen_ai.system.message"})
 
+_DEPRECATED_ATTRIBUTES: dict[str, str] = {
+    "gen_ai.prompt": "gen_ai.user.message / gen_ai.system.message events",
+    "gen_ai.completion": "gen_ai.choice event",
+    "llm.model_name": "gen_ai.request.model",
+    "llm.temperature": "gen_ai.request.temperature",
+    "llm.max_tokens": "gen_ai.request.max_tokens",
+    "llm.usage.prompt_tokens": "gen_ai.usage.input_tokens",
+    "llm.usage.completion_tokens": "gen_ai.usage.output_tokens",
+}
+
+
+def gen_ai_deprecated_attribute_name(span: Span, registry: Registry) -> list[Finding]:
+    findings: list[Finding] = []
+    for name in span.attributes:
+        replacement = _DEPRECATED_ATTRIBUTES.get(name)
+        if replacement is None:
+            continue
+        findings.append(
+            Finding(
+                rule=f"gen_ai.deprecated.{name}",
+                target=span.name,
+                message=f"{name} is deprecated; use {replacement}",
+            )
+        )
+    return findings
+
 
 def gen_ai_system_required(span: Span, registry: Registry) -> list[Finding]:
     if not _has_gen_ai_attributes(span):
