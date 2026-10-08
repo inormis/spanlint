@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from spanlint.model import AttributeValue, Event, InstrumentType, Metric, Span
+from spanlint.model import AttributeValue, Event, InstrumentType, Metric, Span, SpanKind
 from spanlint.registry import Registry
 from spanlint.validate import Finding
 
@@ -59,6 +59,20 @@ def gen_ai_operation_name_enum(span: Span, registry: Registry) -> list[Finding]:
             rule="gen_ai.operation.name.enum",
             target=span.name,
             message=f"gen_ai.operation.name={value!r} is not a known operation",
+        )
+    ]
+
+
+def gen_ai_span_kind_for_client_operation(span: Span, registry: Registry) -> list[Finding]:
+    if "gen_ai.operation.name" not in span.attributes:
+        return []
+    if span.kind is SpanKind.CLIENT:
+        return []
+    return [
+        Finding(
+            rule="gen_ai.span_kind.client",
+            target=span.name,
+            message=(f"GenAI client operations must be SpanKind=CLIENT, got {span.kind.value}"),
         )
     ]
 
