@@ -16,6 +16,7 @@ from spanlint.rules import (
     gen_ai_response_finish_reasons_type,
     gen_ai_response_id_type,
     gen_ai_response_model_type,
+    gen_ai_span_kind_for_client_operation,
     gen_ai_system_required,
 )
 
@@ -29,10 +30,11 @@ def _registry() -> Registry:
 def _span(
     attrs: dict[str, AttributeValue] | None = None,
     events: list[Event] | None = None,
+    kind: SpanKind = SpanKind.CLIENT,
 ) -> Span:
     return Span(
         name="chat",
-        kind=SpanKind.CLIENT,
+        kind=kind,
         start_time_unix_nano=0,
         end_time_unix_nano=1,
         attributes=dict(attrs or {}),
@@ -84,6 +86,31 @@ def test_operation_name_unknown_value_is_flagged() -> None:
 def test_operation_name_missing_is_not_flagged() -> None:
     span = _span({"gen_ai.system": "openai"})
     assert gen_ai_operation_name_enum(span, _registry()) == []
+
+
+def test_client_operation_on_client_kind_passes() -> None:
+    span = _span({"gen_ai.operation.name": "chat"}, kind=SpanKind.CLIENT)
+    assert gen_ai_span_kind_for_client_operation(span, _registry()) == []
+
+
+def test_client_operation_on_internal_kind_is_flagged() -> None:
+    span = _span({"gen_ai.operation.name": "chat"}, kind=SpanKind.INTERNAL)
+    findings = gen_ai_span_kind_for_client_operation(span, _registry())
+    assert len(findings) == 1
+    assert findings[0].rule == "gen_ai.span_kind.client"
+    assert "internal" in findings[0].message
+
+
+def test_client_operation_on_server_kind_is_flagged() -> None:
+    span = _span({"gen_ai.operation.name": "embeddings"}, kind=SpanKind.SERVER)
+    findings = gen_ai_span_kind_for_client_operation(span, _registry())
+    assert len(findings) == 1
+    assert findings[0].rule == "gen_ai.span_kind.client"
+
+
+def test_span_without_operation_name_is_not_flagged_regardless_of_kind() -> None:
+    span = _span({"gen_ai.system": "openai"}, kind=SpanKind.INTERNAL)
+    assert gen_ai_span_kind_for_client_operation(span, _registry()) == []
 
 
 def test_request_model_string_passes() -> None:
