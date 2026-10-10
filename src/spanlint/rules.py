@@ -224,3 +224,25 @@ def _matches_type(value: AttributeValue, type_str: str) -> bool:
 
 def _has_gen_ai_attributes(span: Span) -> bool:
     return any(k.startswith("gen_ai.") for k in span.attributes)
+
+
+DEFAULT_SPAN_RULES = (
+    gen_ai_system_required,
+    gen_ai_operation_name_enum,
+    gen_ai_span_kind_for_client_operation,
+    gen_ai_deprecated_attribute_name,
+    gen_ai_request_model_type,
+    gen_ai_response_model_type,
+    gen_ai_request_temperature_type,
+    gen_ai_request_top_p_type,
+    gen_ai_request_max_tokens_type,
+    gen_ai_response_id_type,
+    gen_ai_response_finish_reasons_type,
+    gen_ai_message_event_attribute_types,
+    gen_ai_choice_event_attribute_types,
+)
+
+DEFAULT_METRIC_RULES = (
+    gen_ai_client_token_usage_metric,
+    gen_ai_client_operation_duration_metric,
+)
