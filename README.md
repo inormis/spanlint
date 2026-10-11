@@ -24,6 +24,38 @@ from it. spanlint looks at the other end, the spans and metrics a running
 application produces. If you are writing conventions, you want Weaver. If
 you are checking whether your instrumentation follows them, this.
 
+## Usage
+
+Point `spanlint check` at an OTLP JSON export of your telemetry:
+
+```
+$ spanlint check trace.json
+no findings
+```
+
+Divergences from the GenAI conventions show up as one line each, with the
+target span, the message, and the rule name:
+
+```
+$ spanlint check broken.json
+chat: gen_ai.request.model must be a string [gen_ai.request.model.type]
+1 finding
+```
+
+The exit code is nonzero whenever there are findings, so this fits a CI
+step. Pass `--format json` for a machine-readable report:
+
+```
+$ spanlint check trace.json --format json
+{
+  "findings": []
+}
+```
+
+Line-delimited OTLP exports (`.jsonl`, one export per line, which is what
+the OTel Collector's file exporter writes) are read the same way. The
+parser is picked by the file's extension.
+
 ## Supported frameworks
 
 Framework detection is what tells spanlint which spans came from where, so
@@ -48,8 +80,8 @@ pytest fixture that grabs whatever spans your test emits so you can lint
 them in place.
 
 Nothing is on PyPI yet. 0.1.0 is cut in the changelog and goes out as soon
-as the publishing side is wired up. After that: a proper `spanlint check`
-subcommand, more framework adapters, and a report that shows per framework
-where the telemetry drifts from the spec.
+as the publishing side is wired up. After that: more framework adapters,
+and a report that shows per framework where the telemetry drifts from the
+spec.
 
 Apache-2.0
