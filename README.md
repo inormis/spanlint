@@ -1,5 +1,8 @@
 # spanlint
 
+[![ci](https://github.com/inormis/spanlint/actions/workflows/ci.yml/badge.svg)](https://github.com/inormis/spanlint/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/spanlint.svg)](https://pypi.org/project/spanlint/)
+
 Checks whether GenAI telemetry actually matches the OpenTelemetry GenAI
 semantic conventions.
 
@@ -23,6 +26,12 @@ registries: the YAML that defines what an attribute is, and code generation
 from it. spanlint looks at the other end, the spans and metrics a running
 application produces. If you are writing conventions, you want Weaver. If
 you are checking whether your instrumentation follows them, this.
+
+## Install
+
+```
+pip install spanlint
+```
 
 ## Usage
 
