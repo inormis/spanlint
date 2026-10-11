@@ -5,7 +5,7 @@ import sys
 from importlib.metadata import version
 from pathlib import Path
 
-from spanlint.otlp import parse_otlp_json_file
+from spanlint.otlp import parse_otlp_json_file, parse_otlp_jsonl_file
 from spanlint.registry import load_registry
 from spanlint.report import render_json, render_text
 from spanlint.rules import DEFAULT_SPAN_RULES
@@ -34,7 +34,8 @@ def _build_parser() -> argparse.ArgumentParser:
 
 
 def _run_check(args: argparse.Namespace) -> int:
-    spans = parse_otlp_json_file(args.path)
+    parser = parse_otlp_jsonl_file if args.path.suffix == ".jsonl" else parse_otlp_json_file
+    spans = parser(args.path)
     registry = load_registry(_REGISTRY_PATH)
     findings = validate(spans, DEFAULT_SPAN_RULES, registry)
     rendered = render_json(findings) if args.format == "json" else render_text(findings)

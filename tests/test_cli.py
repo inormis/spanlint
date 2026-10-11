@@ -83,3 +83,40 @@ def test_check_with_findings_exits_nonzero(
     out = capsys.readouterr().out
     assert code == 1
     assert "gen_ai.request.model" in out
+
+
+def test_check_dispatches_on_jsonl_extension(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    line = json.dumps(
+        {
+            "resourceSpans": [
+                {
+                    "scopeSpans": [
+                        {
+                            "spans": [
+                                {
+                                    "name": "chat",
+                                    "kind": 3,
+                                    "startTimeUnixNano": "0",
+                                    "endTimeUnixNano": "1",
+                                    "attributes": [
+                                        {
+                                            "key": "gen_ai.system",
+                                            "value": {"stringValue": "openai"},
+                                        }
+                                    ],
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    )
+    p = tmp_path / "trace.jsonl"
+    p.write_text(line + "\n" + line + "\n")
+    code = main(["check", str(p)])
+    out = capsys.readouterr().out
+    assert code == 0
+    assert "no findings" in out
