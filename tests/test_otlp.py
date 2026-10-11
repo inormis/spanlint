@@ -7,7 +7,7 @@ from typing import Any
 import pytest
 
 from spanlint.model import SpanKind, StatusCode
-from spanlint.otlp import parse_otlp_json, parse_otlp_json_file
+from spanlint.otlp import parse_otlp_json, parse_otlp_json_file, parse_otlp_jsonl_file
 
 
 def _wrap(spans: list[dict[str, Any]]) -> dict[str, Any]:
@@ -258,3 +258,50 @@ def test_unknown_kind_raises() -> None:
                 ]
             )
         )
+
+
+def _sp(name: str) -> dict[str, Any]:
+    return {
+        "name": name,
+        "kind": 1,
+        "startTimeUnixNano": "0",
+        "endTimeUnixNano": "1",
+    }
+
+
+def test_jsonl_empty_file_yields_no_spans(tmp_path: Path) -> None:
+    p = tmp_path / "empty.jsonl"
+    p.write_text("")
+    assert parse_otlp_jsonl_file(p) == []
+
+
+def test_jsonl_single_line(tmp_path: Path) -> None:
+    p = tmp_path / "one.jsonl"
+    p.write_text(json.dumps(_wrap([_sp("a")])) + "\n")
+    spans = parse_otlp_jsonl_file(p)
+    assert [s.name for s in spans] == ["a"]
+
+
+def test_jsonl_multiple_lines_are_concatenated(tmp_path: Path) -> None:
+    p = tmp_path / "many.jsonl"
+    p.write_text(
+        json.dumps(_wrap([_sp("a"), _sp("b")])) + "\n" + json.dumps(_wrap([_sp("c")])) + "\n"
+    )
+    spans = parse_otlp_jsonl_file(p)
+    assert [s.name for s in spans] == ["a", "b", "c"]
+
+
+def test_jsonl_blank_lines_are_skipped(tmp_path: Path) -> None:
+    p = tmp_path / "blanks.jsonl"
+    p.write_text(
+        "\n" + json.dumps(_wrap([_sp("a")])) + "\n" + "   \n" + json.dumps(_wrap([_sp("b")])) + "\n"
+    )
+    spans = parse_otlp_jsonl_file(p)
+    assert [s.name for s in spans] == ["a", "b"]
+
+
+def test_jsonl_invalid_line_reports_line_number(tmp_path: Path) -> None:
+    p = tmp_path / "bad.jsonl"
+    p.write_text(json.dumps(_wrap([_sp("a")])) + "\n" + "{not json\n")
+    with pytest.raises(ValueError, match="line 2"):
+        parse_otlp_jsonl_file(p)

@@ -36,6 +36,20 @@ def parse_otlp_json_file(path: Path) -> list[Span]:
         return parse_otlp_json(json.load(fh))
 
 
+def parse_otlp_jsonl_file(path: Path) -> list[Span]:
+    spans: list[Span] = []
+    with path.open() as fh:
+        for lineno, line in enumerate(fh, start=1):
+            if not line.strip():
+                continue
+            try:
+                data = json.loads(line)
+            except json.JSONDecodeError as exc:
+                raise ValueError(f"line {lineno}: invalid JSON ({exc.msg})") from exc
+            spans.extend(parse_otlp_json(data))
+    return spans
+
+
 def parse_otlp_json(data: dict[str, Any]) -> list[Span]:
     spans: list[Span] = []
     for rs in data.get("resourceSpans", []):
