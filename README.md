@@ -75,6 +75,11 @@ per-framework conformance can be reported without mixing everything together.
   (`opentelemetry-instrumentation-openai`, including the `_v2` scope).
   Identification falls back to `gen_ai.system=openai` when the instrumentation
   scope name is not one of the expected values.
+- **LangChain**: spans emitted by Traceloop's
+  `opentelemetry-instrumentation-langchain`, which is also what the Traceloop
+  SDK installs, and by Arize's `openinference-instrumentation-langchain`.
+  Identification falls back to `gen_ai.provider.name` being `langchain` or
+  `langgraph` when the scope name is not one of those.
 
 More adapters land as work on them starts.
 
@@ -83,8 +88,8 @@ More adapters land as work on them starts.
 Early, but it runs. You can feed it an OTLP JSON export and get a list of
 findings back, in text or JSON. There are a dozen rules so far, all for the
 GenAI conventions: attribute types, the operation name enum, the two
-message/choice events, and the token/duration histograms. The only
-framework it recognises today is the OpenAI Python SDK. There is also a
+message/choice events, and the token/duration histograms. It recognises
+spans from the OpenAI Python SDK and from LangChain. There is also a
 pytest fixture that grabs whatever spans your test emits so you can lint
 them in place.
 
