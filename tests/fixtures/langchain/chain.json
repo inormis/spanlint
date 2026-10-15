@@ -1,0 +1,394 @@
+{
+  "resourceSpans": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "telemetry.sdk.language",
+            "value": {
+              "stringValue": "python"
+            }
+          },
+          {
+            "key": "telemetry.sdk.name",
+            "value": {
+              "stringValue": "opentelemetry"
+            }
+          },
+          {
+            "key": "telemetry.sdk.version",
+            "value": {
+              "stringValue": "1.45.1"
+            }
+          },
+          {
+            "key": "service.instance.id",
+            "value": {
+              "stringValue": "1139b323-4879-453b-ab6b-0e8b85faa520"
+            }
+          },
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "spanlint-fixtures"
+            }
+          }
+        ]
+      },
+      "scopeSpans": [
+        {
+          "scope": {
+            "name": "opentelemetry.instrumentation.langchain",
+            "version": "0.62.4"
+          },
+          "spans": [
+            {
+              "traceId": "88d47e406114840c680e7cf4bda66f17",
+              "spanId": "da8b9e44e7e7b939",
+              "parentSpanId": "b702ad859487b0da",
+              "name": "execute_task ChatPromptTemplate",
+              "kind": "SPAN_KIND_INTERNAL",
+              "startTimeUnixNano": "1792032799297723000",
+              "endTimeUnixNano": "1792032799298030000",
+              "attributes": [
+                {
+                  "key": "traceloop.workflow.name",
+                  "value": {
+                    "stringValue": "RunnableSequence"
+                  }
+                },
+                {
+                  "key": "traceloop.entity.path",
+                  "value": {
+                    "stringValue": ""
+                  }
+                },
+                {
+                  "key": "traceloop.span.kind",
+                  "value": {
+                    "stringValue": "task"
+                  }
+                },
+                {
+                  "key": "traceloop.entity.name",
+                  "value": {
+                    "stringValue": "ChatPromptTemplate"
+                  }
+                },
+                {
+                  "key": "gen_ai.provider.name",
+                  "value": {
+                    "stringValue": "langchain"
+                  }
+                },
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "execute_task"
+                  }
+                },
+                {
+                  "key": "gen_ai.task.name",
+                  "value": {
+                    "stringValue": "ChatPromptTemplate"
+                  }
+                },
+                {
+                  "key": "gen_ai.task.id",
+                  "value": {
+                    "stringValue": "01a13d7a-7a41-73d3-bcec-b0bb3c17e49e"
+                  }
+                },
+                {
+                  "key": "gen_ai.task.parent.id",
+                  "value": {
+                    "stringValue": "01a13d7a-7a41-73d3-bcec-b0ad16f8fce8"
+                  }
+                },
+                {
+                  "key": "traceloop.entity.input",
+                  "value": {
+                    "stringValue": "{\"inputs\": {\"question\": \"Say hi in one word.\"}, \"tags\": [\"seq:step:1\"], \"metadata\": {}, \"kwargs\": {\"run_type\": \"prompt\", \"name\": \"ChatPromptTemplate\"}}"
+                  }
+                },
+                {
+                  "key": "gen_ai.task.input",
+                  "value": {
+                    "stringValue": "{\"inputs\": {\"question\": \"Say hi in one word.\"}, \"tags\": [\"seq:step:1\"], \"metadata\": {}, \"kwargs\": {\"run_type\": \"prompt\", \"name\": \"ChatPromptTemplate\"}}"
+                  }
+                },
+                {
+                  "key": "gen_ai.task.status",
+                  "value": {
+                    "stringValue": "success"
+                  }
+                },
+                {
+                  "key": "traceloop.entity.output",
+                  "value": {
+                    "stringValue": "{\"outputs\": {\"lc\": 1, \"type\": \"constructor\", \"id\": [\"langchain\", \"prompts\", \"chat\", \"ChatPromptValue\"], \"kwargs\": {\"messages\": [{\"lc\": 1, \"type\": \"constructor\", \"id\": [\"langchain\", \"schema\", \"messages\", \"HumanMessage\"], \"kwargs\": {\"content\": \"Say hi in one word.\", \"type\": \"human\"}}]}}, \"kwargs\": {\"tags\": [\"seq:step:1\"]}}"
+                  }
+                },
+                {
+                  "key": "gen_ai.task.output",
+                  "value": {
+                    "stringValue": "{\"outputs\": {\"lc\": 1, \"type\": \"constructor\", \"id\": [\"langchain\", \"prompts\", \"chat\", \"ChatPromptValue\"], \"kwargs\": {\"messages\": [{\"lc\": 1, \"type\": \"constructor\", \"id\": [\"langchain\", \"schema\", \"messages\", \"HumanMessage\"], \"kwargs\": {\"content\": \"Say hi in one word.\", \"type\": \"human\"}}]}}, \"kwargs\": {\"tags\": [\"seq:step:1\"]}}"
+                  }
+                }
+              ],
+              "status": {},
+              "flags": 256
+            },
+            {
+              "traceId": "88d47e406114840c680e7cf4bda66f17",
+              "spanId": "b9a679280199f302",
+              "parentSpanId": "b702ad859487b0da",
+              "name": "ChatOpenAI.chat",
+              "kind": "SPAN_KIND_CLIENT",
+              "startTimeUnixNano": "1792032799298559000",
+              "endTimeUnixNano": "1792032801578786000",
+              "attributes": [
+                {
+                  "key": "traceloop.workflow.name",
+                  "value": {
+                    "stringValue": "RunnableSequence"
+                  }
+                },
+                {
+                  "key": "traceloop.entity.path",
+                  "value": {
+                    "stringValue": ""
+                  }
+                },
+                {
+                  "key": "traceloop.association.properties.ls_provider",
+                  "value": {
+                    "stringValue": "openai"
+                  }
+                },
+                {
+                  "key": "traceloop.association.properties.ls_model_name",
+                  "value": {
+                    "stringValue": "gpt-4o-mini"
+                  }
+                },
+                {
+                  "key": "traceloop.association.properties.ls_model_type",
+                  "value": {
+                    "stringValue": "chat"
+                  }
+                },
+                {
+                  "key": "traceloop.association.properties.ls_temperature",
+                  "value": {
+                    "doubleValue": 0.0
+                  }
+                },
+                {
+                  "key": "traceloop.association.properties.ls_max_tokens",
+                  "value": {
+                    "intValue": "16"
+                  }
+                },
+                {
+                  "key": "traceloop.association.properties.ls_integration",
+                  "value": {
+                    "stringValue": "langchain_chat_model"
+                  }
+                },
+                {
+                  "key": "traceloop.association.properties.lc_versions",
+                  "value": {
+                    "stringValue": "{\"langchain-core\": \"1.6.10\", \"langchain-openai\": \"1.7.1\"}"
+                  }
+                },
+                {
+                  "key": "gen_ai.provider.name",
+                  "value": {
+                    "stringValue": "openai"
+                  }
+                },
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "chat"
+                  }
+                },
+                {
+                  "key": "gen_ai.request.model",
+                  "value": {
+                    "stringValue": "gpt-4o-mini"
+                  }
+                },
+                {
+                  "key": "gen_ai.request.max_tokens",
+                  "value": {
+                    "intValue": "16"
+                  }
+                },
+                {
+                  "key": "gen_ai.request.temperature",
+                  "value": {
+                    "doubleValue": 0.0
+                  }
+                },
+                {
+                  "key": "gen_ai.input.messages",
+                  "value": {
+                    "stringValue": "[{\"role\": \"user\", \"parts\": [{\"type\": \"text\", \"content\": \"Say hi in one word.\"}]}]"
+                  }
+                },
+                {
+                  "key": "gen_ai.response.model",
+                  "value": {
+                    "stringValue": "gpt-4o-mini-2024-07-18"
+                  }
+                },
+                {
+                  "key": "gen_ai.response.id",
+                  "value": {
+                    "stringValue": "chatcmpl-EZ5snpJEY2nGjp4KIXeR9t6KJzphx"
+                  }
+                },
+                {
+                  "key": "gen_ai.usage.input_tokens",
+                  "value": {
+                    "intValue": "13"
+                  }
+                },
+                {
+                  "key": "gen_ai.usage.output_tokens",
+                  "value": {
+                    "intValue": "2"
+                  }
+                },
+                {
+                  "key": "gen_ai.usage.total_tokens",
+                  "value": {
+                    "intValue": "15"
+                  }
+                },
+                {
+                  "key": "gen_ai.usage.cache_read.input_tokens",
+                  "value": {
+                    "intValue": "0"
+                  }
+                },
+                {
+                  "key": "gen_ai.output.messages",
+                  "value": {
+                    "stringValue": "[{\"role\": \"assistant\", \"parts\": [{\"type\": \"text\", \"content\": \"Hello!\"}], \"finish_reason\": \"stop\"}]"
+                  }
+                },
+                {
+                  "key": "gen_ai.response.finish_reasons",
+                  "value": {
+                    "arrayValue": {
+                      "values": [
+                        {
+                          "stringValue": "stop"
+                        }
+                      ]
+                    }
+                  }
+                }
+              ],
+              "status": {},
+              "flags": 256
+            },
+            {
+              "traceId": "88d47e406114840c680e7cf4bda66f17",
+              "spanId": "b702ad859487b0da",
+              "name": "RunnableSequence.workflow",
+              "kind": "SPAN_KIND_INTERNAL",
+              "startTimeUnixNano": "1792032799297441000",
+              "endTimeUnixNano": "1792032801579043000",
+              "attributes": [
+                {
+                  "key": "traceloop.workflow.name",
+                  "value": {
+                    "stringValue": "RunnableSequence"
+                  }
+                },
+                {
+                  "key": "traceloop.entity.path",
+                  "value": {
+                    "stringValue": ""
+                  }
+                },
+                {
+                  "key": "traceloop.span.kind",
+                  "value": {
+                    "stringValue": "workflow"
+                  }
+                },
+                {
+                  "key": "traceloop.entity.name",
+                  "value": {
+                    "stringValue": "RunnableSequence"
+                  }
+                },
+                {
+                  "key": "gen_ai.provider.name",
+                  "value": {
+                    "stringValue": "langchain"
+                  }
+                },
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "invoke_agent"
+                  }
+                },
+                {
+                  "key": "gen_ai.agent.name",
+                  "value": {
+                    "stringValue": "RunnableSequence"
+                  }
+                },
+                {
+                  "key": "gen_ai.agent.id",
+                  "value": {
+                    "stringValue": "01a13d7a-7a41-73d3-bcec-b0ad16f8fce8"
+                  }
+                },
+                {
+                  "key": "traceloop.entity.input",
+                  "value": {
+                    "stringValue": "{\"inputs\": {\"question\": \"Say hi in one word.\"}, \"tags\": [], \"metadata\": {}, \"kwargs\": {\"name\": \"RunnableSequence\"}}"
+                  }
+                },
+                {
+                  "key": "gen_ai.task.input",
+                  "value": {
+                    "stringValue": "{\"inputs\": {\"question\": \"Say hi in one word.\"}, \"tags\": [], \"metadata\": {}, \"kwargs\": {\"name\": \"RunnableSequence\"}}"
+                  }
+                },
+                {
+                  "key": "gen_ai.task.status",
+                  "value": {
+                    "stringValue": "success"
+                  }
+                },
+                {
+                  "key": "traceloop.entity.output",
+                  "value": {
+                    "stringValue": "{\"outputs\": {\"lc\": 1, \"type\": \"constructor\", \"id\": [\"langchain\", \"schema\", \"messages\", \"AIMessage\"], \"kwargs\": {\"content\": \"Hello!\", \"additional_kwargs\": {\"refusal\": null}, \"response_metadata\": {\"token_usage\": {\"completion_tokens\": 2, \"prompt_tokens\": 13, \"total_tokens\": 15, \"completion_tokens_details\": {\"accepted_prediction_tokens\": 0, \"audio_tokens\": 0, \"reasoning_tokens\": 0, \"rejected_prediction_tokens\": 0, \"text_tokens\": null}, \"prompt_tokens_details\": {\"audio_tokens\": 0, \"cache_write_tokens\": null, \"cached_tokens\": 0, \"image_tokens\": null, \"text_tokens\": null}}, \"model_provider\": \"openai\", \"model_name\": \"gpt-4o-mini-2024-07-18\", \"system_fingerprint\": \"fp_6e6b621634\", \"id\": \"chatcmpl-EZ5snpJEY2nGjp4KIXeR9t6KJzphx\", \"service_tier\": \"default\", \"finish_reason\": \"stop\", \"logprobs\": null}, \"type\": \"ai\", \"id\": \"lc_run--01a13d7a-7a42-7780-9840-41452f0c64cb-0\", \"usage_metadata\": {\"input_tokens\": 13, \"output_tokens\": 2, \"total_tokens\": 15, \"input_token_details\": {\"audio\": 0, \"cache_read\": 0}, \"output_token_details\": {\"audio\": 0, \"reasoning\": 0}}, \"tool_calls\": [], \"invalid_tool_calls\": []}}, \"kwargs\": {\"tags\": []}}"
+                  }
+                },
+                {
+                  "key": "gen_ai.task.output",
+                  "value": {
+                    "stringValue": "{\"outputs\": {\"lc\": 1, \"type\": \"constructor\", \"id\": [\"langchain\", \"schema\", \"messages\", \"AIMessage\"], \"kwargs\": {\"content\": \"Hello!\", \"additional_kwargs\": {\"refusal\": null}, \"response_metadata\": {\"token_usage\": {\"completion_tokens\": 2, \"prompt_tokens\": 13, \"total_tokens\": 15, \"completion_tokens_details\": {\"accepted_prediction_tokens\": 0, \"audio_tokens\": 0, \"reasoning_tokens\": 0, \"rejected_prediction_tokens\": 0, \"text_tokens\": null}, \"prompt_tokens_details\": {\"audio_tokens\": 0, \"cache_write_tokens\": null, \"cached_tokens\": 0, \"image_tokens\": null, \"text_tokens\": null}}, \"model_provider\": \"openai\", \"model_name\": \"gpt-4o-mini-2024-07-18\", \"system_fingerprint\": \"fp_6e6b621634\", \"id\": \"chatcmpl-EZ5snpJEY2nGjp4KIXeR9t6KJzphx\", \"service_tier\": \"default\", \"finish_reason\": \"stop\", \"logprobs\": null}, \"type\": \"ai\", \"id\": \"lc_run--01a13d7a-7a42-7780-9840-41452f0c64cb-0\", \"usage_metadata\": {\"input_tokens\": 13, \"output_tokens\": 2, \"total_tokens\": 15, \"input_token_details\": {\"audio\": 0, \"cache_read\": 0}, \"output_token_details\": {\"audio\": 0, \"reasoning\": 0}}, \"tool_calls\": [], \"invalid_tool_calls\": []}}, \"kwargs\": {\"tags\": []}}"
+                  }
+                }
+              ],
+              "status": {},
+              "flags": 256
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
