@@ -80,6 +80,11 @@ per-framework conformance can be reported without mixing everything together.
   SDK installs, and by Arize's `openinference-instrumentation-langchain`.
   Identification falls back to `gen_ai.provider.name` being `langchain` or
   `langgraph` when the scope name is not one of those.
+- **LlamaIndex**: spans from LlamaIndex's own OpenTelemetry bridge
+  (`llama-index-observability-otel`), from Traceloop's
+  `opentelemetry-instrumentation-llamaindex`, and from Arize's
+  `openinference-instrumentation-llama-index`. Scope name only; none of
+  the three puts a LlamaIndex-specific attribute on every span.
 
 More adapters land as work on them starts.
 
@@ -89,7 +94,7 @@ Early, but it runs. You can feed it an OTLP JSON export and get a list of
 findings back, in text or JSON. There are a dozen rules so far, all for the
 GenAI conventions: attribute types, the operation name enum, the two
 message/choice events, and the token/duration histograms. It recognises
-spans from the OpenAI Python SDK and from LangChain. There is also a
+spans from the OpenAI Python SDK, LangChain and LlamaIndex. There is also a
 pytest fixture that grabs whatever spans your test emits so you can lint
 them in place.
 
