@@ -32,3 +32,39 @@ OPENAI_API_KEY=... .venv-langchain/bin/python scripts/fixtures/langchain/capture
 The instrumentation is Traceloop's (OpenLLMetry); upstream
 opentelemetry-python-contrib has no LangChain instrumentation at the time
 of capture.
+
+## llamaindex
+
+Captured 2026-10-17 with Python 3.12.13. Two runs of the same script, one per
+instrumentation.
+
+| package | version |
+| --- | --- |
+| llama-index-core | 0.14.25 |
+| llama-index-instrumentation | 0.5.0 |
+| llama-index-llms-openai | 0.8.3 |
+| llama-index-observability-otel | 0.7.0 |
+| openai | 2.54.0 |
+| opentelemetry-instrumentation-llamaindex | 0.62.4 |
+| opentelemetry-instrumentation-openai | 0.62.4 |
+| opentelemetry-semantic-conventions-ai | 0.5.1 |
+| opentelemetry-sdk | 1.45.1 |
+| opentelemetry-exporter-otlp-proto-common | 1.45.1 |
+
+```
+uv venv --python 3.12 .venv-llamaindex
+uv pip install --python .venv-llamaindex/bin/python \
+    llama-index-core==0.14.25 llama-index-llms-openai==0.8.3 \
+    llama-index-observability-otel==0.7.0 \
+    opentelemetry-instrumentation-llamaindex==0.62.4 \
+    opentelemetry-instrumentation-openai==0.62.4 \
+    opentelemetry-sdk==1.45.1 opentelemetry-exporter-otlp-proto-common==1.45.1
+OPENAI_API_KEY=... .venv-llamaindex/bin/python scripts/fixtures/llamaindex/capture.py native \
+    > tests/fixtures/llamaindex/chat_engine_native.json
+OPENAI_API_KEY=... .venv-llamaindex/bin/python scripts/fixtures/llamaindex/capture.py traceloop \
+    > tests/fixtures/llamaindex/chat_engine_traceloop.json
+```
+
+Under Traceloop the OpenAI call inside LlamaIndex is traced by Traceloop's
+OpenAI instrumentation (scope opentelemetry.instrumentation.openai.v1), not
+by the LlamaIndex one, so the traceloop file carries spans from two scopes.

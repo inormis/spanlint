@@ -1,0 +1,340 @@
+{
+  "resourceSpans": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "telemetry.sdk.language",
+            "value": {
+              "stringValue": "python"
+            }
+          },
+          {
+            "key": "telemetry.sdk.name",
+            "value": {
+              "stringValue": "opentelemetry"
+            }
+          },
+          {
+            "key": "telemetry.sdk.version",
+            "value": {
+              "stringValue": "1.45.1"
+            }
+          },
+          {
+            "key": "service.instance.id",
+            "value": {
+              "stringValue": "64d76dc2-bf57-4bb3-a5b3-08205de562b5"
+            }
+          },
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "spanlint-fixtures"
+            }
+          }
+        ]
+      },
+      "scopeSpans": [
+        {
+          "scope": {
+            "name": "llamaindex.opentelemetry.tracer"
+          },
+          "spans": [
+            {
+              "traceId": "95dacfa174a7847956cc176d3dea77e6",
+              "spanId": "76355638985b4dcd",
+              "parentSpanId": "63fa034bedd97977",
+              "name": "OpenAI.chat",
+              "kind": "SPAN_KIND_INTERNAL",
+              "startTimeUnixNano": "1792207619298648000",
+              "endTimeUnixNano": "1792207621914999000",
+              "events": [
+                {
+                  "timeUnixNano": "1792207621914912000",
+                  "name": "LLMChatStartEvent",
+                  "attributes": [
+                    {
+                      "key": "timestamp",
+                      "value": {
+                        "stringValue": "\"2026-10-17 05:26:59.298679\""
+                      }
+                    },
+                    {
+                      "key": "id_",
+                      "value": {
+                        "stringValue": "7de046d3-aa70-43cf-a026-a85e4138338f"
+                      }
+                    },
+                    {
+                      "key": "span_id",
+                      "value": {
+                        "stringValue": "OpenAI.chat-9d071fa6-d2b6-4f7b-8eaa-19e3670e1332"
+                      }
+                    },
+                    {
+                      "key": "messages",
+                      "value": {
+                        "stringValue": "[{\"role\": \"user\", \"additional_kwargs\": {}, \"blocks\": [{\"block_type\": \"text\", \"text\": \"Say hi in one word.\"}]}]"
+                      }
+                    },
+                    {
+                      "key": "model_dict.class_name",
+                      "value": {
+                        "stringValue": "openai_llm"
+                      }
+                    },
+                    {
+                      "key": "model_dict.context_window",
+                      "value": {
+                        "intValue": "128000"
+                      }
+                    },
+                    {
+                      "key": "model_dict.num_output",
+                      "value": {
+                        "intValue": "16"
+                      }
+                    },
+                    {
+                      "key": "model_dict.is_chat_model",
+                      "value": {
+                        "boolValue": true
+                      }
+                    },
+                    {
+                      "key": "model_dict.is_function_calling_model",
+                      "value": {
+                        "boolValue": true
+                      }
+                    },
+                    {
+                      "key": "model_dict.model_name",
+                      "value": {
+                        "stringValue": "gpt-4o-mini"
+                      }
+                    },
+                    {
+                      "key": "model_dict.system_role",
+                      "value": {
+                        "stringValue": "system"
+                      }
+                    },
+                    {
+                      "key": "class_name",
+                      "value": {
+                        "stringValue": "LLMChatStartEvent"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "timeUnixNano": "1792207621914956000",
+                  "name": "LLMChatEndEvent",
+                  "attributes": [
+                    {
+                      "key": "timestamp",
+                      "value": {
+                        "stringValue": "\"2026-10-17 05:27:01.914056\""
+                      }
+                    },
+                    {
+                      "key": "id_",
+                      "value": {
+                        "stringValue": "a2e6116e-1dc4-4863-bf8f-51a1c9d6a07d"
+                      }
+                    },
+                    {
+                      "key": "span_id",
+                      "value": {
+                        "stringValue": "OpenAI.chat-9d071fa6-d2b6-4f7b-8eaa-19e3670e1332"
+                      }
+                    },
+                    {
+                      "key": "messages",
+                      "value": {
+                        "stringValue": "[{\"role\": \"user\", \"additional_kwargs\": {}, \"blocks\": [{\"block_type\": \"text\", \"text\": \"Say hi in one word.\"}]}]"
+                      }
+                    },
+                    {
+                      "key": "response.message.role",
+                      "value": {
+                        "stringValue": "assistant"
+                      }
+                    },
+                    {
+                      "key": "response.message.blocks",
+                      "value": {
+                        "stringValue": "[{\"block_type\": \"text\", \"text\": \"Hello!\"}]"
+                      }
+                    },
+                    {
+                      "key": "response.raw.id",
+                      "value": {
+                        "stringValue": "chatcmpl-EZpMT6piovP69wUT6c31HmbMlph4R"
+                      }
+                    },
+                    {
+                      "key": "response.raw.choices",
+                      "value": {
+                        "stringValue": "[{\"finish_reason\": \"stop\", \"index\": 0, \"logprobs\": null, \"message\": {\"content\": \"Hello!\", \"refusal\": null, \"role\": \"assistant\", \"annotations\": [], \"audio\": null, \"function_call\": null, \"tool_calls\": null}}]"
+                      }
+                    },
+                    {
+                      "key": "response.raw.created",
+                      "value": {
+                        "intValue": "1792207621"
+                      }
+                    },
+                    {
+                      "key": "response.raw.model",
+                      "value": {
+                        "stringValue": "gpt-4o-mini-2024-07-18"
+                      }
+                    },
+                    {
+                      "key": "response.raw.object",
+                      "value": {
+                        "stringValue": "chat.completion"
+                      }
+                    },
+                    {
+                      "key": "response.raw.moderation",
+                      "value": {
+                        "stringValue": "null"
+                      }
+                    },
+                    {
+                      "key": "response.raw.service_tier",
+                      "value": {
+                        "stringValue": "default"
+                      }
+                    },
+                    {
+                      "key": "response.raw.system_fingerprint",
+                      "value": {
+                        "stringValue": "fp_e4f6d9e471"
+                      }
+                    },
+                    {
+                      "key": "response.raw.usage.completion_tokens",
+                      "value": {
+                        "intValue": "2"
+                      }
+                    },
+                    {
+                      "key": "response.raw.usage.prompt_tokens",
+                      "value": {
+                        "intValue": "13"
+                      }
+                    },
+                    {
+                      "key": "response.raw.usage.total_tokens",
+                      "value": {
+                        "intValue": "15"
+                      }
+                    },
+                    {
+                      "key": "response.raw.usage.completion_tokens_details.accepted_prediction_tokens",
+                      "value": {
+                        "intValue": "0"
+                      }
+                    },
+                    {
+                      "key": "response.raw.usage.completion_tokens_details.audio_tokens",
+                      "value": {
+                        "intValue": "0"
+                      }
+                    },
+                    {
+                      "key": "response.raw.usage.completion_tokens_details.reasoning_tokens",
+                      "value": {
+                        "intValue": "0"
+                      }
+                    },
+                    {
+                      "key": "response.raw.usage.completion_tokens_details.rejected_prediction_tokens",
+                      "value": {
+                        "intValue": "0"
+                      }
+                    },
+                    {
+                      "key": "response.raw.usage.prompt_tokens_details.audio_tokens",
+                      "value": {
+                        "intValue": "0"
+                      }
+                    },
+                    {
+                      "key": "response.raw.usage.prompt_tokens_details.cache_write_tokens",
+                      "value": {
+                        "stringValue": "null"
+                      }
+                    },
+                    {
+                      "key": "response.raw.usage.prompt_tokens_details.cached_tokens",
+                      "value": {
+                        "intValue": "0"
+                      }
+                    },
+                    {
+                      "key": "response.delta",
+                      "value": {
+                        "stringValue": "null"
+                      }
+                    },
+                    {
+                      "key": "response.logprobs",
+                      "value": {
+                        "stringValue": "null"
+                      }
+                    },
+                    {
+                      "key": "response.additional_kwargs.prompt_tokens",
+                      "value": {
+                        "intValue": "13"
+                      }
+                    },
+                    {
+                      "key": "response.additional_kwargs.completion_tokens",
+                      "value": {
+                        "intValue": "2"
+                      }
+                    },
+                    {
+                      "key": "response.additional_kwargs.total_tokens",
+                      "value": {
+                        "intValue": "15"
+                      }
+                    },
+                    {
+                      "key": "class_name",
+                      "value": {
+                        "stringValue": "LLMChatEndEvent"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "status": {
+                "code": "STATUS_CODE_OK"
+              },
+              "flags": 256
+            },
+            {
+              "traceId": "95dacfa174a7847956cc176d3dea77e6",
+              "spanId": "63fa034bedd97977",
+              "name": "SimpleChatEngine.chat",
+              "kind": "SPAN_KIND_INTERNAL",
+              "startTimeUnixNano": "1792207619296105000",
+              "endTimeUnixNano": "1792207621919322000",
+              "status": {
+                "code": "STATUS_CODE_OK"
+              },
+              "flags": 256
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
