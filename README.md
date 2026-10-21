@@ -70,11 +70,13 @@ parser is picked by the file's extension.
 Framework detection is what tells spanlint which spans came from where, so
 per-framework conformance can be reported without mixing everything together.
 
-- **openai-python**: spans emitted directly by the OpenAI Python SDK, and
-  by the OpenTelemetry contrib instrumentation
-  (`opentelemetry-instrumentation-openai`, including the `_v2` scope).
-  Identification falls back to `gen_ai.system=openai` when the instrumentation
-  scope name is not one of the expected values.
+- **openai-python**: spans emitted directly by the OpenAI Python SDK, by
+  the OpenTelemetry contrib instrumentation
+  (`opentelemetry-instrumentation-openai`, including the `_v2` scope), and
+  by Traceloop's OpenAI instrumentation (scope
+  `opentelemetry.instrumentation.openai.v1`). Identification falls back to
+  `gen_ai.system=openai` or `gen_ai.provider.name=openai` when the
+  instrumentation scope name is not one of the expected values.
 - **LangChain**: spans emitted by Traceloop's
   `opentelemetry-instrumentation-langchain`, which is also what the Traceloop
   SDK installs, and by Arize's `openinference-instrumentation-langchain`.
@@ -85,6 +87,10 @@ per-framework conformance can be reported without mixing everything together.
   `opentelemetry-instrumentation-llamaindex`, and from Arize's
   `openinference-instrumentation-llama-index`. Scope name only; none of
   the three puts a LlamaIndex-specific attribute on every span.
+- **Traceloop SDK**: the workflow, task, agent and tool spans that the
+  `traceloop-sdk` decorators emit under the `traceloop.tracer` scope. Spans
+  from Traceloop's per-framework instrumentations are claimed by the
+  framework adapters above, not by this one.
 
 More adapters land as work on them starts.
 
@@ -94,9 +100,9 @@ Early, but it runs. You can feed it an OTLP JSON export and get a list of
 findings back, in text or JSON. There are a dozen rules so far, all for the
 GenAI conventions: attribute types, the operation name enum, the two
 message/choice events, and the token/duration histograms. It recognises
-spans from the OpenAI Python SDK, LangChain and LlamaIndex. There is also a
-pytest fixture that grabs whatever spans your test emits so you can lint
-them in place.
+spans from the OpenAI Python SDK, LangChain, LlamaIndex and the Traceloop
+SDK. There is also a pytest fixture that grabs whatever spans your test
+emits so you can lint them in place.
 
 Nothing is on PyPI yet. 0.1.0 is cut in the changelog and goes out as soon
 as the publishing side is wired up. After that: more framework adapters,

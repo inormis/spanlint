@@ -7,6 +7,7 @@ _SCOPES = frozenset(
         "openai",
         "opentelemetry.instrumentation.openai",
         "opentelemetry.instrumentation.openai_v2",
+        "opentelemetry.instrumentation.openai.v1",
     }
 )
 
@@ -14,4 +15,5 @@ _SCOPES = frozenset(
 def is_openai_span(span: Span) -> bool:
     if span.instrumentation_scope in _SCOPES:
         return True
-    return span.attributes.get("gen_ai.system") == "openai"
+    attrs = span.attributes
+    return "openai" in (attrs.get("gen_ai.system"), attrs.get("gen_ai.provider.name"))
