@@ -68,3 +68,30 @@ OPENAI_API_KEY=... .venv-llamaindex/bin/python scripts/fixtures/llamaindex/captu
 Under Traceloop the OpenAI call inside LlamaIndex is traced by Traceloop's
 OpenAI instrumentation (scope opentelemetry.instrumentation.openai.v1), not
 by the LlamaIndex one, so the traceloop file carries spans from two scopes.
+
+## traceloop
+
+Captured 2026-10-21 with Python 3.12.13.
+
+| package | version |
+| --- | --- |
+| traceloop-sdk | 0.62.4 |
+| openai | 3.35.1 |
+| opentelemetry-instrumentation-openai | 0.62.4 |
+| opentelemetry-semantic-conventions-ai | 0.5.1 |
+| opentelemetry-sdk | 1.45.1 |
+| opentelemetry-exporter-otlp-proto-common | 1.45.1 |
+
+```
+uv venv --python 3.12 .venv-traceloop
+uv pip install --python .venv-traceloop/bin/python \
+    traceloop-sdk==0.62.4 openai==3.35.1 httpx \
+    opentelemetry-sdk==1.45.1 opentelemetry-exporter-otlp-proto-common==1.45.1
+OPENAI_API_KEY=... .venv-traceloop/bin/python scripts/fixtures/traceloop/capture.py \
+    > tests/fixtures/traceloop/workflow.json
+```
+
+httpx is listed because traceloop-sdk imports it without declaring it and
+openai 3.x no longer depends on it. The run enables only the OpenAI
+instrument, so the file has the SDK's workflow and task spans plus one
+openai.chat span from opentelemetry-instrumentation-openai.

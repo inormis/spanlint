@@ -1,0 +1,287 @@
+{
+  "resourceSpans": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "telemetry.sdk.language",
+            "value": {
+              "stringValue": "python"
+            }
+          },
+          {
+            "key": "telemetry.sdk.name",
+            "value": {
+              "stringValue": "opentelemetry"
+            }
+          },
+          {
+            "key": "telemetry.sdk.version",
+            "value": {
+              "stringValue": "1.45.1"
+            }
+          },
+          {
+            "key": "service.instance.id",
+            "value": {
+              "stringValue": "1cf85a14-0f0c-410b-99c9-e7ff794d82fd"
+            }
+          },
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "spanlint-fixtures"
+            }
+          }
+        ]
+      },
+      "scopeSpans": [
+        {
+          "scope": {
+            "name": "opentelemetry.instrumentation.openai.v1",
+            "version": "0.62.4"
+          },
+          "spans": [
+            {
+              "traceId": "44a9020cc1bd71b9ab573bd5e1bc603b",
+              "spanId": "8a2b2944b8dd56b3",
+              "parentSpanId": "fc105a75bb83adbd",
+              "name": "openai.chat",
+              "kind": "SPAN_KIND_CLIENT",
+              "startTimeUnixNano": "1792553256338131000",
+              "endTimeUnixNano": "1792553258663608000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "chat"
+                  }
+                },
+                {
+                  "key": "traceloop.workflow.name",
+                  "value": {
+                    "stringValue": "greet"
+                  }
+                },
+                {
+                  "key": "traceloop.entity.path",
+                  "value": {
+                    "stringValue": "ask"
+                  }
+                },
+                {
+                  "key": "gen_ai.provider.name",
+                  "value": {
+                    "stringValue": "openai"
+                  }
+                },
+                {
+                  "key": "gen_ai.request.model",
+                  "value": {
+                    "stringValue": "gpt-4o-mini"
+                  }
+                },
+                {
+                  "key": "gen_ai.request.max_tokens",
+                  "value": {
+                    "intValue": "16"
+                  }
+                },
+                {
+                  "key": "gen_ai.request.temperature",
+                  "value": {
+                    "intValue": "0"
+                  }
+                },
+                {
+                  "key": "gen_ai.is_streaming",
+                  "value": {
+                    "boolValue": false
+                  }
+                },
+                {
+                  "key": "gen_ai.openai.api_base",
+                  "value": {
+                    "stringValue": "https://api.openai.com/v1/"
+                  }
+                },
+                {
+                  "key": "gen_ai.input.messages",
+                  "value": {
+                    "stringValue": "[{\"role\": \"user\", \"parts\": [{\"content\": \"Say hi in one word.\", \"type\": \"text\"}]}]"
+                  }
+                },
+                {
+                  "key": "gen_ai.response.model",
+                  "value": {
+                    "stringValue": "gpt-4o-mini-2024-07-18"
+                  }
+                },
+                {
+                  "key": "gen_ai.response.id",
+                  "value": {
+                    "stringValue": "chatcmpl-EbHHGfln7Ooj2zmRLyKqVE6bCcx3H"
+                  }
+                },
+                {
+                  "key": "gen_ai.response.finish_reasons",
+                  "value": {
+                    "arrayValue": {
+                      "values": [
+                        {
+                          "stringValue": "stop"
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "key": "gen_ai.openai.response.system_fingerprint",
+                  "value": {
+                    "stringValue": "fp_f1b0ec5777"
+                  }
+                },
+                {
+                  "key": "openai.response.service_tier",
+                  "value": {
+                    "stringValue": "default"
+                  }
+                },
+                {
+                  "key": "gen_ai.usage.total_tokens",
+                  "value": {
+                    "intValue": "15"
+                  }
+                },
+                {
+                  "key": "gen_ai.usage.output_tokens",
+                  "value": {
+                    "intValue": "2"
+                  }
+                },
+                {
+                  "key": "gen_ai.usage.input_tokens",
+                  "value": {
+                    "intValue": "13"
+                  }
+                },
+                {
+                  "key": "gen_ai.usage.cache_read.input_tokens",
+                  "value": {
+                    "intValue": "0"
+                  }
+                },
+                {
+                  "key": "gen_ai.usage.reasoning_tokens",
+                  "value": {
+                    "intValue": "0"
+                  }
+                },
+                {
+                  "key": "gen_ai.output.messages",
+                  "value": {
+                    "stringValue": "[{\"role\": \"assistant\", \"parts\": [{\"content\": \"Hello!\", \"type\": \"text\"}], \"finish_reason\": \"stop\"}]"
+                  }
+                }
+              ],
+              "status": {},
+              "flags": 256
+            }
+          ]
+        },
+        {
+          "scope": {
+            "name": "traceloop.tracer"
+          },
+          "spans": [
+            {
+              "traceId": "44a9020cc1bd71b9ab573bd5e1bc603b",
+              "spanId": "fc105a75bb83adbd",
+              "parentSpanId": "f432ad2ade464621",
+              "name": "ask.task",
+              "kind": "SPAN_KIND_INTERNAL",
+              "startTimeUnixNano": "1792553256302249000",
+              "endTimeUnixNano": "1792553258663763000",
+              "attributes": [
+                {
+                  "key": "traceloop.workflow.name",
+                  "value": {
+                    "stringValue": "greet"
+                  }
+                },
+                {
+                  "key": "traceloop.span.kind",
+                  "value": {
+                    "stringValue": "task"
+                  }
+                },
+                {
+                  "key": "traceloop.entity.name",
+                  "value": {
+                    "stringValue": "ask"
+                  }
+                },
+                {
+                  "key": "traceloop.entity.input",
+                  "value": {
+                    "stringValue": "{\"args\": [\"Say hi in one word.\"], \"kwargs\": {}}"
+                  }
+                },
+                {
+                  "key": "traceloop.entity.output",
+                  "value": {
+                    "stringValue": "\"Hello!\""
+                  }
+                }
+              ],
+              "status": {},
+              "flags": 256
+            },
+            {
+              "traceId": "44a9020cc1bd71b9ab573bd5e1bc603b",
+              "spanId": "f432ad2ade464621",
+              "name": "greet.workflow",
+              "kind": "SPAN_KIND_INTERNAL",
+              "startTimeUnixNano": "1792553256302151000",
+              "endTimeUnixNano": "1792553258663804000",
+              "attributes": [
+                {
+                  "key": "traceloop.workflow.name",
+                  "value": {
+                    "stringValue": "greet"
+                  }
+                },
+                {
+                  "key": "traceloop.span.kind",
+                  "value": {
+                    "stringValue": "workflow"
+                  }
+                },
+                {
+                  "key": "traceloop.entity.name",
+                  "value": {
+                    "stringValue": "greet"
+                  }
+                },
+                {
+                  "key": "traceloop.entity.input",
+                  "value": {
+                    "stringValue": "{\"args\": [], \"kwargs\": {}}"
+                  }
+                },
+                {
+                  "key": "traceloop.entity.output",
+                  "value": {
+                    "stringValue": "\"Hello!\""
+                  }
+                }
+              ],
+              "status": {},
+              "flags": 256
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
