@@ -95,3 +95,35 @@ httpx is listed because traceloop-sdk imports it without declaring it and
 openai 3.x no longer depends on it. The run enables only the OpenAI
 instrument, so the file has the SDK's workflow and task spans plus one
 openai.chat span from opentelemetry-instrumentation-openai.
+
+## litellm
+
+Captured 2026-10-23 with Python 3.12.13. Two runs of the same script, one per
+instrumentation.
+
+| package | version |
+| --- | --- |
+| litellm | 1.106.2 |
+| openai | 2.54.0 |
+| opentelemetry-instrumentation-litellm | 0.62.4 |
+| opentelemetry-semantic-conventions-ai | 0.5.1 |
+| opentelemetry-sdk | 1.45.1 |
+| opentelemetry-exporter-otlp-proto-common | 1.45.1 |
+
+```
+uv venv --python 3.12 .venv-litellm
+uv pip install --python .venv-litellm/bin/python \
+    litellm==1.106.2 opentelemetry-instrumentation-litellm==0.62.4 \
+    opentelemetry-sdk==1.45.1 opentelemetry-exporter-otlp-proto-common==1.45.1
+OPENAI_API_KEY=... .venv-litellm/bin/python scripts/fixtures/litellm/capture.py native \
+    > tests/fixtures/litellm/completion_native.json
+OPENAI_API_KEY=... .venv-litellm/bin/python scripts/fixtures/litellm/capture.py traceloop \
+    > tests/fixtures/litellm/completion_traceloop.json
+```
+
+The native run uses LiteLLM's own OpenTelemetry callback (tracer name
+litellm). It warns that the proxy server is not installed; that only skips
+the proxy-specific hookup and the SDK callback still emits its spans. The
+script blanks the OpenAI organisation and project headers and the Cloudflare
+cookie that LiteLLM copies into hidden_params, since they identify the
+account that made the capture.
