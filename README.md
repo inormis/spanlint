@@ -90,6 +90,10 @@ per-framework conformance can be reported without mixing everything together.
 - **LiteLLM**: spans from LiteLLM's own OpenTelemetry callback (tracer name
   `litellm`), from Traceloop's `opentelemetry-instrumentation-litellm`, and
   from Arize's `openinference-instrumentation-litellm`. Scope name only.
+- **Semantic Kernel** (Python): spans from Semantic Kernel's own telemetry,
+  which is off until `SEMANTICKERNEL_EXPERIMENTAL_GENAI_ENABLE_OTEL_DIAGNOSTICS`
+  is set. Every tracer there is named after its module, so any scope starting
+  with `semantic_kernel.` counts.
 - **Traceloop SDK**: the workflow, task, agent and tool spans that the
   `traceloop-sdk` decorators emit under the `traceloop.tracer` scope. Spans
   from Traceloop's per-framework instrumentations are claimed by the
@@ -103,9 +107,9 @@ Early, but it runs. You can feed it an OTLP JSON export and get a list of
 findings back, in text or JSON. There are a dozen rules so far, all for the
 GenAI conventions: attribute types, the operation name enum, the two
 message/choice events, and the token/duration histograms. It recognises
-spans from the OpenAI Python SDK, LangChain, LlamaIndex, LiteLLM and the
-Traceloop SDK. There is also a pytest fixture that grabs whatever spans your
-test emits so you can lint them in place.
+spans from the OpenAI Python SDK, LangChain, LlamaIndex, LiteLLM, Semantic
+Kernel and the Traceloop SDK. There is also a pytest fixture that grabs
+whatever spans your test emits so you can lint them in place.
 
 Nothing is on PyPI yet. 0.1.0 is cut in the changelog and goes out as soon
 as the publishing side is wired up. After that: more framework adapters,
