@@ -1,0 +1,147 @@
+{
+  "resourceSpans": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "telemetry.sdk.language",
+            "value": {
+              "stringValue": "python"
+            }
+          },
+          {
+            "key": "telemetry.sdk.name",
+            "value": {
+              "stringValue": "opentelemetry"
+            }
+          },
+          {
+            "key": "telemetry.sdk.version",
+            "value": {
+              "stringValue": "1.45.1"
+            }
+          },
+          {
+            "key": "service.instance.id",
+            "value": {
+              "stringValue": "bd559460-e6da-4d63-a4de-a9c6fb9fb052"
+            }
+          },
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "spanlint-fixtures"
+            }
+          }
+        ]
+      },
+      "scopeSpans": [
+        {
+          "scope": {
+            "name": "semantic_kernel.utils.telemetry.model_diagnostics.decorators"
+          },
+          "spans": [
+            {
+              "traceId": "aef3a95b182eb49fa95bc584dfb5a0b8",
+              "spanId": "60cdac7c6cab4c15",
+              "parentSpanId": "6b32e98209495db0",
+              "name": "chat gpt-4o-mini",
+              "kind": "SPAN_KIND_INTERNAL",
+              "startTimeUnixNano": "1792779498470958000",
+              "endTimeUnixNano": "1792779500322816000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "chat"
+                  }
+                },
+                {
+                  "key": "gen_ai.system",
+                  "value": {
+                    "stringValue": "openai"
+                  }
+                },
+                {
+                  "key": "gen_ai.request.model",
+                  "value": {
+                    "stringValue": "gpt-4o-mini"
+                  }
+                },
+                {
+                  "key": "server.address",
+                  "value": {
+                    "stringValue": "https://api.openai.com/v1/"
+                  }
+                },
+                {
+                  "key": "gen_ai.request.max_tokens",
+                  "value": {
+                    "intValue": "16"
+                  }
+                },
+                {
+                  "key": "gen_ai.response.id",
+                  "value": {
+                    "stringValue": "chatcmpl-EcE8KFbEIoWrCeuZmbXedTbUmHYwn"
+                  }
+                },
+                {
+                  "key": "gen_ai.response.finish_reason",
+                  "value": {
+                    "stringValue": "FinishReason.STOP"
+                  }
+                },
+                {
+                  "key": "gen_ai.usage.input_tokens",
+                  "value": {
+                    "intValue": "13"
+                  }
+                },
+                {
+                  "key": "gen_ai.usage.output_tokens",
+                  "value": {
+                    "intValue": "2"
+                  }
+                }
+              ],
+              "status": {},
+              "flags": 256
+            }
+          ]
+        },
+        {
+          "scope": {
+            "name": "semantic_kernel.functions.kernel_function"
+          },
+          "spans": [
+            {
+              "traceId": "aef3a95b182eb49fa95bc584dfb5a0b8",
+              "spanId": "6b32e98209495db0",
+              "name": "execute_tool fixtures-greet",
+              "kind": "SPAN_KIND_INTERNAL",
+              "startTimeUnixNano": "1792779498469500000",
+              "endTimeUnixNano": "1792779500322909000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "execute_tool"
+                  }
+                },
+                {
+                  "key": "gen_ai.tool.name",
+                  "value": {
+                    "stringValue": "fixtures-greet"
+                  }
+                }
+              ],
+              "status": {},
+              "flags": 256
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

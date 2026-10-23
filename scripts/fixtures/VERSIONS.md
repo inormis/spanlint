@@ -127,3 +127,29 @@ the proxy-specific hookup and the SDK callback still emits its spans. The
 script blanks the OpenAI organisation and project headers and the Cloudflare
 cookie that LiteLLM copies into hidden_params, since they identify the
 account that made the capture.
+
+## semantic_kernel
+
+Captured 2026-10-23 with Python 3.12.13.
+
+| package | version |
+| --- | --- |
+| semantic-kernel | 1.45.0 |
+| openai | 3.37.0 |
+| opentelemetry-sdk | 1.45.1 |
+| opentelemetry-exporter-otlp-proto-common | 1.45.1 |
+
+```
+uv venv --python 3.12 .venv-semantic-kernel
+uv pip install --python .venv-semantic-kernel/bin/python \
+    semantic-kernel==1.45.0 \
+    opentelemetry-sdk==1.45.1 opentelemetry-exporter-otlp-proto-common==1.45.1
+OPENAI_API_KEY=... .venv-semantic-kernel/bin/python scripts/fixtures/semantic_kernel/capture.py \
+    > tests/fixtures/semantic_kernel/invoke_prompt.json
+```
+
+Semantic Kernel's own telemetry is the only instrumentation; there is no
+Traceloop or OpenInference package for it. The script turns on
+SEMANTICKERNEL_EXPERIMENTAL_GENAI_ENABLE_OTEL_DIAGNOSTICS before importing
+it. The sensitive variant of that flag sends message content through Python
+logging, not span events, so it is left off and the file has no events.
