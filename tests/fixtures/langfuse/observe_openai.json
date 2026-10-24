@@ -1,0 +1,143 @@
+{
+  "resourceSpans": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "telemetry.sdk.language",
+            "value": {
+              "stringValue": "python"
+            }
+          },
+          {
+            "key": "telemetry.sdk.name",
+            "value": {
+              "stringValue": "opentelemetry"
+            }
+          },
+          {
+            "key": "telemetry.sdk.version",
+            "value": {
+              "stringValue": "1.45.1"
+            }
+          },
+          {
+            "key": "service.instance.id",
+            "value": {
+              "stringValue": "f4c2f9e8-5f1a-497c-ad6d-f59e2d0951cc"
+            }
+          },
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "spanlint-fixtures"
+            }
+          }
+        ]
+      },
+      "scopeSpans": [
+        {
+          "scope": {
+            "name": "langfuse-sdk",
+            "version": "5.0.4",
+            "attributes": [
+              {
+                "key": "public_key",
+                "value": {
+                  "stringValue": "pk-lf-fixtures"
+                }
+              }
+            ]
+          },
+          "spans": [
+            {
+              "traceId": "700864d32430b7cca9a1630ccbe550a9",
+              "spanId": "b53d09776956c356",
+              "parentSpanId": "a33d76b49e58ebb2",
+              "name": "OpenAI-generation",
+              "kind": "SPAN_KIND_INTERNAL",
+              "startTimeUnixNano": "1792816216133426000",
+              "endTimeUnixNano": "1792816219293312000",
+              "attributes": [
+                {
+                  "key": "langfuse.observation.input",
+                  "value": {
+                    "stringValue": "[{\"role\": \"user\", \"content\": \"Say hi in one word.\"}]"
+                  }
+                },
+                {
+                  "key": "langfuse.observation.type",
+                  "value": {
+                    "stringValue": "generation"
+                  }
+                },
+                {
+                  "key": "langfuse.observation.output",
+                  "value": {
+                    "stringValue": "{\"role\": \"assistant\", \"content\": \"Hello!\"}"
+                  }
+                },
+                {
+                  "key": "langfuse.observation.model.name",
+                  "value": {
+                    "stringValue": "gpt-4o-mini-2024-07-18"
+                  }
+                },
+                {
+                  "key": "langfuse.observation.usage_details",
+                  "value": {
+                    "stringValue": "{\"completion_tokens\": 2, \"prompt_tokens\": 13, \"total_tokens\": 15, \"completion_tokens_details\": {\"accepted_prediction_tokens\": 0, \"audio_tokens\": 0, \"reasoning_tokens\": 0, \"rejected_prediction_tokens\": 0}, \"prompt_tokens_details\": {\"audio_tokens\": 0, \"cached_tokens\": 0}}"
+                  }
+                },
+                {
+                  "key": "langfuse.observation.model.parameters",
+                  "value": {
+                    "stringValue": "{\"temperature\": 0, \"max_tokens\": 16, \"top_p\": 1, \"frequency_penalty\": 0, \"presence_penalty\": 0, \"service_tier\": \"default\"}"
+                  }
+                }
+              ],
+              "status": {},
+              "flags": 256
+            },
+            {
+              "traceId": "700864d32430b7cca9a1630ccbe550a9",
+              "spanId": "a33d76b49e58ebb2",
+              "name": "greet",
+              "kind": "SPAN_KIND_INTERNAL",
+              "startTimeUnixNano": "1792816216107564000",
+              "endTimeUnixNano": "1792816219293528000",
+              "attributes": [
+                {
+                  "key": "langfuse.internal.is_app_root",
+                  "value": {
+                    "boolValue": true
+                  }
+                },
+                {
+                  "key": "langfuse.observation.input",
+                  "value": {
+                    "stringValue": "{\"args\": [], \"kwargs\": {}}"
+                  }
+                },
+                {
+                  "key": "langfuse.observation.type",
+                  "value": {
+                    "stringValue": "span"
+                  }
+                },
+                {
+                  "key": "langfuse.observation.output",
+                  "value": {
+                    "stringValue": "Hello!"
+                  }
+                }
+              ],
+              "status": {},
+              "flags": 256
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

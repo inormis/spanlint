@@ -153,3 +153,30 @@ Traceloop or OpenInference package for it. The script turns on
 SEMANTICKERNEL_EXPERIMENTAL_GENAI_ENABLE_OTEL_DIAGNOSTICS before importing
 it. The sensitive variant of that flag sends message content through Python
 logging, not span events, so it is left off and the file has no events.
+
+## langfuse
+
+Captured 2026-10-24 with Python 3.12.13.
+
+| package | version |
+| --- | --- |
+| langfuse | 5.0.4 |
+| openai | 3.37.0 |
+| opentelemetry-sdk | 1.45.1 |
+| opentelemetry-exporter-otlp-proto-common | 1.45.1 |
+
+```
+uv venv --python 3.12 .venv-langfuse
+uv pip install --python .venv-langfuse/bin/python \
+    langfuse==5.0.4 openai==3.37.0 \
+    opentelemetry-sdk==1.45.1 opentelemetry-exporter-otlp-proto-common==1.45.1
+OPENAI_API_KEY=... .venv-langfuse/bin/python scripts/fixtures/langfuse/capture.py \
+    > tests/fixtures/langfuse/observe_openai.json
+```
+
+The Langfuse SDK is built on OpenTelemetry and puts everything it emits on
+one tracer named langfuse-sdk. The client takes a span exporter of its own,
+so the script gives it an in-memory one and no Langfuse account or host is
+involved. The project keys passed in are placeholders; the public one is
+stamped on the instrumentation scope and so appears in the file. All the
+attributes are in the langfuse.* namespace, nothing from gen_ai.*.
