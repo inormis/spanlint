@@ -94,6 +94,11 @@ per-framework conformance can be reported without mixing everything together.
   which is off until `SEMANTICKERNEL_EXPERIMENTAL_GENAI_ENABLE_OTEL_DIAGNOSTICS`
   is set. Every tracer there is named after its module, so any scope starting
   with `semantic_kernel.` counts.
+- **Microsoft.Extensions.AI** (.NET): spans from the library's
+  `UseOpenTelemetry` chat client, which puts them on the
+  `Experimental.Microsoft.Extensions.AI` activity source unless the
+  application names its own. Scope name only. The attributes are plain
+  `gen_ai.*`, so a span from a renamed source goes unrecognised.
 - **Langfuse**: spans from the Langfuse Python SDK, which is built on
   OpenTelemetry and puts everything it emits, the `@observe` decorator and
   its OpenAI and LangChain integrations included, on one tracer named
@@ -113,8 +118,9 @@ findings back, in text or JSON. There are a dozen rules so far, all for the
 GenAI conventions: attribute types, the operation name enum, the two
 message/choice events, and the token/duration histograms. It recognises
 spans from the OpenAI Python SDK, LangChain, LlamaIndex, LiteLLM, Semantic
-Kernel, Langfuse and the Traceloop SDK. There is also a pytest fixture that
-grabs whatever spans your test emits so you can lint them in place.
+Kernel, Microsoft.Extensions.AI, Langfuse and the Traceloop SDK. There is
+also a pytest fixture that grabs whatever spans your test emits so you can
+lint them in place.
 
 Nothing is on PyPI yet. 0.1.0 is cut in the changelog and goes out as soon
 as the publishing side is wired up. After that: more framework adapters,
