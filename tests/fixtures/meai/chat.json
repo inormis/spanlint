@@ -1,0 +1,175 @@
+{
+  "resourceSpans": [
+    {
+      "resource": {
+        "attributes": [
+          {
+            "key": "service.name",
+            "value": {
+              "stringValue": "spanlint-fixtures"
+            }
+          },
+          {
+            "key": "service.instance.id",
+            "value": {
+              "stringValue": "8b398512-db47-4401-8fc8-5ea8603ea7b8"
+            }
+          },
+          {
+            "key": "telemetry.sdk.name",
+            "value": {
+              "stringValue": "opentelemetry"
+            }
+          },
+          {
+            "key": "telemetry.sdk.language",
+            "value": {
+              "stringValue": "dotnet"
+            }
+          },
+          {
+            "key": "telemetry.sdk.version",
+            "value": {
+              "stringValue": "1.20.1"
+            }
+          }
+        ]
+      },
+      "scopeSpans": [
+        {
+          "scope": {
+            "name": "Experimental.Microsoft.Extensions.AI"
+          },
+          "spans": [
+            {
+              "traceId": "ad85357a228c419e0f6e1e79580e19c0",
+              "spanId": "a1a6be387d2e1c5c",
+              "name": "chat gpt-4o-mini",
+              "kind": "SPAN_KIND_CLIENT",
+              "startTimeUnixNano": "1792843997879798000",
+              "endTimeUnixNano": "1792844000733901000",
+              "attributes": [
+                {
+                  "key": "gen_ai.operation.name",
+                  "value": {
+                    "stringValue": "chat"
+                  }
+                },
+                {
+                  "key": "gen_ai.request.model",
+                  "value": {
+                    "stringValue": "gpt-4o-mini"
+                  }
+                },
+                {
+                  "key": "gen_ai.provider.name",
+                  "value": {
+                    "stringValue": "openai"
+                  }
+                },
+                {
+                  "key": "server.address",
+                  "value": {
+                    "stringValue": "api.openai.com"
+                  }
+                },
+                {
+                  "key": "server.port",
+                  "value": {
+                    "intValue": "443"
+                  }
+                },
+                {
+                  "key": "gen_ai.request.max_tokens",
+                  "value": {
+                    "intValue": "16"
+                  }
+                },
+                {
+                  "key": "gen_ai.request.temperature",
+                  "value": {
+                    "doubleValue": 0.0
+                  }
+                },
+                {
+                  "key": "gen_ai.input.messages",
+                  "value": {
+                    "stringValue": "[\n  {\n    \"role\": \"user\",\n    \"parts\": [\n      {\n        \"type\": \"text\",\n        \"content\": \"Say hi in one word.\"\n      }\n    ]\n  }\n]"
+                  }
+                },
+                {
+                  "key": "openai.api.type",
+                  "value": {
+                    "stringValue": "chat_completions"
+                  }
+                },
+                {
+                  "key": "openai.response.service_tier",
+                  "value": {
+                    "stringValue": "default"
+                  }
+                },
+                {
+                  "key": "openai.response.system_fingerprint",
+                  "value": {
+                    "stringValue": "fp_f1b0ec5777"
+                  }
+                },
+                {
+                  "key": "gen_ai.output.messages",
+                  "value": {
+                    "stringValue": "[\n  {\n    \"role\": \"assistant\",\n    \"parts\": [\n      {\n        \"type\": \"text\",\n        \"content\": \"Hello!\"\n      }\n    ],\n    \"finish_reason\": \"stop\"\n  }\n]"
+                  }
+                },
+                {
+                  "key": "gen_ai.response.finish_reasons",
+                  "value": {
+                    "stringValue": "[\"stop\"]"
+                  }
+                },
+                {
+                  "key": "gen_ai.response.id",
+                  "value": {
+                    "stringValue": "chatcmpl-EcUue22nbBbCa7KtVnYowwcH1A13u"
+                  }
+                },
+                {
+                  "key": "gen_ai.response.model",
+                  "value": {
+                    "stringValue": "gpt-4o-mini-2024-07-18"
+                  }
+                },
+                {
+                  "key": "gen_ai.usage.input_tokens",
+                  "value": {
+                    "intValue": "13"
+                  }
+                },
+                {
+                  "key": "gen_ai.usage.output_tokens",
+                  "value": {
+                    "intValue": "2"
+                  }
+                },
+                {
+                  "key": "gen_ai.usage.cache_read.input_tokens",
+                  "value": {
+                    "intValue": "0"
+                  }
+                },
+                {
+                  "key": "gen_ai.usage.reasoning.output_tokens",
+                  "value": {
+                    "intValue": "0"
+                  }
+                }
+              ],
+              "flags": 257
+            }
+          ]
+        }
+      ],
+      "schemaUrl": "https://opentelemetry.io/schemas/1.44.0"
+    }
+  ]
+}

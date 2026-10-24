@@ -180,3 +180,33 @@ so the script gives it an in-memory one and no Langfuse account or host is
 involved. The project keys passed in are placeholders; the public one is
 stamped on the instrumentation scope and so appears in the file. All the
 attributes are in the langfuse.* namespace, nothing from gen_ai.*.
+
+## meai
+
+Captured 2026-10-24 with the .NET SDK 9.0.101, and Python 3.12.13 for the
+receiver.
+
+| package | version |
+| --- | --- |
+| Microsoft.Extensions.AI | 10.11.0 |
+| Microsoft.Extensions.AI.OpenAI | 10.11.0 |
+| OpenTelemetry | 1.20.1 |
+| OpenTelemetry.Exporter.OpenTelemetryProtocol | 1.20.1 |
+| opentelemetry-proto (receiver) | 1.45.1 |
+| protobuf (receiver) | 7.36.2 |
+
+```
+uv venv --python 3.12 .venv-otlp
+uv pip install --python .venv-otlp/bin/python opentelemetry-proto==1.45.1
+.venv-otlp/bin/python scripts/fixtures/otlp_receiver.py 4318 > tests/fixtures/meai/chat.json &
+OPENAI_API_KEY=... dotnet run --project scripts/fixtures/meai
+```
+
+The .NET OTLP exporter only speaks protobuf and there is no JSON file
+exporter, so the program posts to scripts/fixtures/otlp_receiver.py, which
+decodes the request with the OTLP proto classes and writes the same JSON
+shape as the Python captures. The activity source is the library's default,
+Experimental.Microsoft.Extensions.AI, and EnableSensitiveData is on so the
+messages land on the span as gen_ai.input.messages and gen_ai.output.messages.
+The OpenAI library's own experimental telemetry stays off. Build output under
+scripts/fixtures/meai/bin and obj is not committed.
