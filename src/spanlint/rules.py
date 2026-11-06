@@ -77,6 +77,20 @@ def gen_ai_span_kind_for_client_operation(span: Span, registry: Registry) -> lis
     ]
 
 
+# Only meaningful once a span is known to come from a GenAI framework, so the
+# conformance runner applies this to adapter-claimed spans and `check` does not.
+def gen_ai_attributes_missing(span: Span, registry: Registry) -> list[Finding]:
+    if _has_gen_ai_attributes(span):
+        return []
+    return [
+        Finding(
+            rule="gen_ai.attributes.missing",
+            target=span.name,
+            message="span carries no gen_ai.* attributes",
+        )
+    ]
+
+
 def gen_ai_request_model_type(span: Span, registry: Registry) -> list[Finding]:
     return _check_attribute_type(span, registry, "gen_ai.request.model")
 

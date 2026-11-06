@@ -3,6 +3,8 @@ from pathlib import Path
 from spanlint.model import AttributeValue, Event, InstrumentType, Metric, Span, SpanKind
 from spanlint.registry import Registry, load_registry
 from spanlint.rules import (
+    DEFAULT_SPAN_RULES,
+    gen_ai_attributes_missing,
     gen_ai_choice_event_attribute_types,
     gen_ai_client_operation_duration_metric,
     gen_ai_client_token_usage_metric,
@@ -531,3 +533,23 @@ def test_current_and_deprecated_mixed_only_flags_deprecated() -> None:
     assert len(findings) == 1
     assert findings[0].rule == "gen_ai.deprecated.gen_ai.completion"
     assert "gen_ai.choice" in findings[0].message
+
+
+def test_span_without_gen_ai_attributes_is_flagged() -> None:
+    # arrange
+    span = _span({"langfuse.observation.type": "span"})
+    # act
+    findings = gen_ai_attributes_missing(span, _registry())
+    # assert
+    assert len(findings) == 1
+    assert findings[0].rule == "gen_ai.attributes.missing"
+    assert findings[0].target == "chat"
+
+
+def test_span_with_any_gen_ai_attribute_is_not_flagged_as_missing() -> None:
+    span = _span({"gen_ai.request.model": "gpt-4"})
+    assert gen_ai_attributes_missing(span, _registry()) == []
+
+
+def test_attributes_missing_rule_is_not_a_default_rule() -> None:
+    assert gen_ai_attributes_missing not in DEFAULT_SPAN_RULES
