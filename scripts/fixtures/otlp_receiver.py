@@ -53,7 +53,7 @@ class _Handler(BaseHTTPRequestHandler):
     server: _Server
 
     def do_POST(self) -> None:
-        body = self.rfile.read(int(self.headers["Content-Length"]))
+        body = self._read_body()
         request = ExportTraceServiceRequest()
         request.ParseFromString(body)
         self.server.received.resource_spans.extend(request.resource_spans)
@@ -62,6 +62,20 @@ class _Handler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", "application/x-protobuf")
         self.end_headers()
         self.wfile.write(ExportTraceServiceResponse().SerializeToString())
+
+    def _read_body(self) -> bytes:
+        if self.headers.get("Transfer-Encoding") != "chunked":
+            return self.rfile.read(int(self.headers["Content-Length"]))
+        # The Node exporter streams the body instead of sizing it up front.
+        chunks: list[bytes] = []
+        while True:
+            size = int(self.rfile.readline().split(b";")[0], 16)
+            if size == 0:
+                while self.rfile.readline().strip():
+                    pass
+                return b"".join(chunks)
+            chunks.append(self.rfile.read(size))
+            self.rfile.readline()
 
     def log_message(self, format: str, *args: Any) -> None:
         pass
