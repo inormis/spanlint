@@ -1,0 +1,14 @@
+{
+  "name": "spanlint-vercel-ai-fixture",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@ai-sdk/openai": "4.0.109",
+    "@ai-sdk/otel": "1.0.163",
+    "@opentelemetry/api": "1.9.1",
+    "@opentelemetry/exporter-trace-otlp-proto": "0.223.0",
+    "@opentelemetry/resources": "2.12.0",
+    "@opentelemetry/sdk-trace-node": "2.12.0",
+    "ai": "7.0.163"
+  }
+}

@@ -210,3 +210,45 @@ Experimental.Microsoft.Extensions.AI, and EnableSensitiveData is on so the
 messages land on the span as gen_ai.input.messages and gen_ai.output.messages.
 The OpenAI library's own experimental telemetry stays off. Build output under
 scripts/fixtures/meai/bin and obj is not committed.
+
+## vercel_ai
+
+Captured 2026-11-06 with Node 22.23.4 and npm 10.9.9, and Python 3.12.13 for
+the receiver. Two runs of the same script, one per integration.
+
+| package | version |
+| --- | --- |
+| ai | 7.0.163 |
+| @ai-sdk/openai | 4.0.109 |
+| @ai-sdk/otel | 1.0.163 |
+| @opentelemetry/api | 1.9.1 |
+| @opentelemetry/sdk-trace-node | 2.12.0 |
+| @opentelemetry/resources | 2.12.0 |
+| @opentelemetry/exporter-trace-otlp-proto | 0.223.0 |
+| opentelemetry-proto (receiver) | 1.45.1 |
+| protobuf (receiver) | 7.36.2 |
+
+```
+uv venv --python 3.12 .venv-otlp
+uv pip install --python .venv-otlp/bin/python opentelemetry-proto==1.45.1
+(cd scripts/fixtures/vercel_ai && npm install --package-lock=false)
+.venv-otlp/bin/python scripts/fixtures/otlp_receiver.py 4318 > tests/fixtures/vercel_ai/generate_text_semconv.json &
+OPENAI_API_KEY=... node scripts/fixtures/vercel_ai/capture.mjs semconv
+.venv-otlp/bin/python scripts/fixtures/otlp_receiver.py 4318 > tests/fixtures/vercel_ai/generate_text_legacy.json &
+OPENAI_API_KEY=... node scripts/fixtures/vercel_ai/capture.mjs legacy
+```
+
+AI SDK 7 moved OpenTelemetry out of the core package into @ai-sdk/otel,
+which ships two integrations; the script registers one of them with
+registerTelemetry and telemetry is on from then on without any per-call
+option. OpenTelemetry (the semconv run) uses the tracer named gen_ai and
+emits invoke_agent, agent_step and chat spans in the current conventions
+shape. LegacyOpenTelemetry (the legacy run) uses the tracer named ai and
+emits the ai.generateText and ai.generateText.doGenerate spans the SDK
+produced before 7, with a few gen_ai.* attributes next to the ai.* ones.
+The call goes through openai.chat so it is a Chat Completions request like
+the other fixtures. ai 7 needs Node 22. The Node exporter speaks protobuf
+only, so it posts to the receiver like the .NET program, and it sends the
+body chunked. The exporter is held at 0.223 because 0.301 wants a newer
+@opentelemetry/api than @ai-sdk/otel pins; with 1.9.1 the tree holds a
+single copy of the API. node_modules is not committed.
