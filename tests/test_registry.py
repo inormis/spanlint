@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import spanlint
 from spanlint.registry import load_registry
 
 FIXTURES = Path(__file__).parent / "fixtures"
@@ -76,3 +77,12 @@ def test_definition_2_scalar_attribute() -> None:
 def test_directory_load_merges_both_formats() -> None:
     reg = load_registry(FIXTURES)
     assert {"gen_ai.system", "gen_ai.provider.name"} <= set(reg.attributes)
+
+
+def test_bundled_registry_is_the_current_gen_ai_model() -> None:
+    reg = load_registry(Path(spanlint.__file__).parent / "data" / "gen_ai.yaml")
+    provider = reg.attribute("gen_ai.provider.name")
+    operation = reg.attribute("gen_ai.operation.name")
+    assert provider is not None and "openai" in provider.enum_members
+    assert operation is not None and "invoke_agent" in operation.enum_members
+    assert reg.attribute("gen_ai.system") is None
