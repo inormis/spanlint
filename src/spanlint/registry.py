@@ -29,13 +29,22 @@ def load_registry(path: Path) -> Registry:
     for f in _yaml_files(path):
         with f.open() as fh:
             doc = yaml.safe_load(fh) or {}
-        for group in doc.get("groups", []):
-            for raw in group.get("attributes", []):
-                if "ref" in raw:
-                    continue
-                attr = _parse_attribute(raw)
-                attributes[attr.id] = attr
+        for raw in _attribute_entries(doc):
+            if "ref" in raw:
+                continue
+            attr = _parse_attribute(raw)
+            attributes[attr.id] = attr
     return Registry(attributes=attributes)
+
+
+# The GenAI conventions moved to their own repository, whose model files use
+# Weaver's definition/2 layout: attributes sit at the top level, keyed by
+# `key` instead of `id`. The main semconv repository still uses `groups`.
+def _attribute_entries(doc: dict[str, Any]) -> list[dict[str, Any]]:
+    entries: list[dict[str, Any]] = list(doc.get("attributes", []))
+    for group in doc.get("groups", []):
+        entries.extend(group.get("attributes", []))
+    return entries
 
 
 def _yaml_files(path: Path) -> list[Path]:
@@ -53,7 +62,7 @@ def _parse_attribute(raw: dict[str, Any]) -> AttributeDef:
         type_str = str(t)
         members = ()
     return AttributeDef(
-        id=str(raw["id"]),
+        id=str(raw["key"] if "key" in raw else raw["id"]),
         type=type_str,
         stability=str(raw.get("stability", "")),
         brief=str(raw.get("brief", "")).strip(),

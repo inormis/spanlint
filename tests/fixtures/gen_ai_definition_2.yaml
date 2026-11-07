@@ -1,0 +1,20 @@
+file_format: definition/2
+attributes:
+  - key: gen_ai.provider.name
+    type:
+      members:
+        - id: openai
+          stability: development
+          value: "openai"
+          brief: '[OpenAI](https://openai.com/)'
+        - id: anthropic
+          stability: development
+          value: "anthropic"
+          brief: '[Anthropic](https://www.anthropic.com/)'
+    brief: The Generative AI provider as identified by the client or server instrumentation.
+    stability: development
+  - key: gen_ai.request.temperature
+    type: double
+    brief: The temperature setting for the GenAI request.
+    examples: [0.0]
+    stability: development

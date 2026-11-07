@@ -50,3 +50,29 @@ def test_loads_from_directory() -> None:
 def test_span_group_refs_are_ignored() -> None:
     reg = load_registry(FIXTURES / "gen_ai.yaml")
     assert len(reg.attributes) == 10
+
+
+def test_loads_definition_2_attributes() -> None:
+    reg = load_registry(FIXTURES / "gen_ai_definition_2.yaml")
+    assert set(reg.attributes) == {"gen_ai.provider.name", "gen_ai.request.temperature"}
+
+
+def test_definition_2_enum_members() -> None:
+    reg = load_registry(FIXTURES / "gen_ai_definition_2.yaml")
+    provider = reg.attribute("gen_ai.provider.name")
+    assert provider is not None
+    assert provider.type == "enum"
+    assert provider.enum_members == ("openai", "anthropic")
+
+
+def test_definition_2_scalar_attribute() -> None:
+    reg = load_registry(FIXTURES / "gen_ai_definition_2.yaml")
+    temperature = reg.attribute("gen_ai.request.temperature")
+    assert temperature is not None
+    assert temperature.type == "double"
+    assert temperature.stability == "development"
+
+
+def test_directory_load_merges_both_formats() -> None:
+    reg = load_registry(FIXTURES)
+    assert {"gen_ai.system", "gen_ai.provider.name"} <= set(reg.attributes)
