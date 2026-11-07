@@ -502,11 +502,11 @@ def test_operation_duration_rule_ignores_other_metrics() -> None:
 
 
 def test_no_deprecated_names_passes() -> None:
-    span = _span({"gen_ai.system": "openai", "gen_ai.request.model": "gpt-4"})
+    span = _span({"gen_ai.provider.name": "openai", "gen_ai.request.model": "gpt-4"})
     assert gen_ai_deprecated_attribute_name(span, _registry()) == []
 
 
-def test_gen_ai_prompt_is_flagged_with_event_replacement() -> None:
+def test_gen_ai_prompt_is_flagged_with_input_messages_replacement() -> None:
     # arrange
     span = _span({"gen_ai.prompt": "say hi"})
     # act
@@ -515,7 +515,35 @@ def test_gen_ai_prompt_is_flagged_with_event_replacement() -> None:
     assert len(findings) == 1
     assert findings[0].rule == "gen_ai.deprecated.gen_ai.prompt"
     assert findings[0].target == "chat"
-    assert "gen_ai.user.message" in findings[0].message
+    assert "gen_ai.input.messages" in findings[0].message
+
+
+def test_gen_ai_system_is_flagged_with_provider_name_replacement() -> None:
+    findings = gen_ai_deprecated_attribute_name(_span({"gen_ai.system": "openai"}), _registry())
+    assert [f.rule for f in findings] == ["gen_ai.deprecated.gen_ai.system"]
+    assert "gen_ai.provider.name" in findings[0].message
+
+
+def test_renamed_gen_ai_names_point_at_their_replacements() -> None:
+    # arrange
+    span = _span(
+        {
+            "gen_ai.usage.prompt_tokens": 12,
+            "gen_ai.openai.response.service_tier": "default",
+            "gen_ai.openai.request.response_format": "json_object",
+        }
+    )
+    # act
+    by_rule = {f.rule: f.message for f in gen_ai_deprecated_attribute_name(span, _registry())}
+    # assert
+    assert "gen_ai.usage.input_tokens" in by_rule["gen_ai.deprecated.gen_ai.usage.prompt_tokens"]
+    assert (
+        "openai.response.service_tier"
+        in by_rule["gen_ai.deprecated.gen_ai.openai.response.service_tier"]
+    )
+    assert (
+        "gen_ai.output.type" in by_rule["gen_ai.deprecated.gen_ai.openai.request.response_format"]
+    )
 
 
 def test_llm_carryover_names_each_get_a_finding() -> None:
@@ -550,7 +578,7 @@ def test_current_and_deprecated_mixed_only_flags_deprecated() -> None:
     # assert
     assert len(findings) == 1
     assert findings[0].rule == "gen_ai.deprecated.gen_ai.completion"
-    assert "gen_ai.choice" in findings[0].message
+    assert "gen_ai.output.messages" in findings[0].message
 
 
 def test_span_without_gen_ai_attributes_is_flagged() -> None:

@@ -6,9 +6,19 @@ from spanlint.validate import Finding
 
 _MESSAGE_EVENT_NAMES = frozenset({"gen_ai.user.message", "gen_ai.system.message"})
 
+# Replacements as the deprecated registry in the main semconv repo gives them.
+# The llm.* names are OpenLLMetry's and were never in the conventions.
 _DEPRECATED_ATTRIBUTES: dict[str, str] = {
-    "gen_ai.prompt": "gen_ai.user.message / gen_ai.system.message events",
-    "gen_ai.completion": "gen_ai.choice event",
+    "gen_ai.system": "gen_ai.provider.name",
+    "gen_ai.prompt": "gen_ai.input.messages",
+    "gen_ai.completion": "gen_ai.output.messages",
+    "gen_ai.usage.prompt_tokens": "gen_ai.usage.input_tokens",
+    "gen_ai.usage.completion_tokens": "gen_ai.usage.output_tokens",
+    "gen_ai.openai.request.seed": "gen_ai.request.seed",
+    "gen_ai.openai.request.response_format": "gen_ai.output.type",
+    "gen_ai.openai.request.service_tier": "openai.request.service_tier",
+    "gen_ai.openai.response.service_tier": "openai.response.service_tier",
+    "gen_ai.openai.response.system_fingerprint": "openai.response.system_fingerprint",
     "llm.model_name": "gen_ai.request.model",
     "llm.temperature": "gen_ai.request.temperature",
     "llm.max_tokens": "gen_ai.request.max_tokens",

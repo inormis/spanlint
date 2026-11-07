@@ -105,7 +105,7 @@ def test_check_with_findings_exits_nonzero(
                                         "endTimeUnixNano": "1",
                                         "attributes": [
                                             {
-                                                "key": "gen_ai.system",
+                                                "key": "gen_ai.provider.name",
                                                 "value": {"stringValue": "openai"},
                                             },
                                             {
@@ -145,7 +145,7 @@ def test_check_dispatches_on_jsonl_extension(
                                     "endTimeUnixNano": "1",
                                     "attributes": [
                                         {
-                                            "key": "gen_ai.system",
+                                            "key": "gen_ai.provider.name",
                                             "value": {"stringValue": "openai"},
                                         }
                                     ],
