@@ -33,16 +33,33 @@ def gen_ai_deprecated_attribute_name(span: Span, registry: Registry) -> list[Fin
     return findings
 
 
-def gen_ai_system_required(span: Span, registry: Registry) -> list[Finding]:
-    if not _has_gen_ai_attributes(span):
+# The span definitions that list gen_ai.provider.name as required. invoke_agent
+# only needs it for the remote flavour; the in-process one has no provider.
+_PROVIDER_REQUIRED_OPERATIONS = frozenset(
+    {
+        "chat",
+        "text_completion",
+        "generate_content",
+        "realtime_inference",
+        "embeddings",
+        "fetch_response",
+        "create_agent",
+    }
+)
+
+
+def gen_ai_provider_name_required(span: Span, registry: Registry) -> list[Finding]:
+    operation = span.attributes.get("gen_ai.operation.name")
+    remote_agent = operation == "invoke_agent" and span.kind is SpanKind.CLIENT
+    if operation not in _PROVIDER_REQUIRED_OPERATIONS and not remote_agent:
         return []
-    if "gen_ai.system" in span.attributes:
+    if "gen_ai.provider.name" in span.attributes:
         return []
     return [
         Finding(
-            rule="gen_ai.system.required",
+            rule="gen_ai.provider.name.required",
             target=span.name,
-            message="gen_ai.system is required on GenAI spans",
+            message=f"gen_ai.provider.name is required on {operation} spans",
         )
     ]
 
@@ -241,7 +258,7 @@ def _has_gen_ai_attributes(span: Span) -> bool:
 
 
 DEFAULT_SPAN_RULES = (
-    gen_ai_system_required,
+    gen_ai_provider_name_required,
     gen_ai_operation_name_enum,
     gen_ai_span_kind_for_client_operation,
     gen_ai_deprecated_attribute_name,

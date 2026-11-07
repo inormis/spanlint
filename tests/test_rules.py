@@ -11,6 +11,7 @@ from spanlint.rules import (
     gen_ai_deprecated_attribute_name,
     gen_ai_message_event_attribute_types,
     gen_ai_operation_name_enum,
+    gen_ai_provider_name_required,
     gen_ai_request_max_tokens_type,
     gen_ai_request_model_type,
     gen_ai_request_temperature_type,
@@ -19,7 +20,6 @@ from spanlint.rules import (
     gen_ai_response_id_type,
     gen_ai_response_model_type,
     gen_ai_span_kind_for_client_operation,
-    gen_ai_system_required,
 )
 
 FIXTURES = Path(__file__).parent / "fixtures"
@@ -44,29 +44,47 @@ def _span(
     )
 
 
-def test_gen_ai_system_present_passes() -> None:
-    span = _span({"gen_ai.system": "openai"})
-    assert gen_ai_system_required(span, _registry()) == []
+def test_provider_name_present_passes() -> None:
+    span = _span({"gen_ai.operation.name": "chat", "gen_ai.provider.name": "openai"})
+    assert gen_ai_provider_name_required(span, _registry()) == []
 
 
-def test_gen_ai_system_missing_on_gen_ai_span_is_flagged() -> None:
+def test_provider_name_missing_on_chat_span_is_flagged() -> None:
     # arrange
-    span = _span({"gen_ai.request.model": "gpt-4"})
+    span = _span({"gen_ai.operation.name": "chat", "gen_ai.request.model": "gpt-4"})
     # act
-    findings = gen_ai_system_required(span, _registry())
+    findings = gen_ai_provider_name_required(span, _registry())
     # assert
     assert len(findings) == 1
-    assert findings[0].rule == "gen_ai.system.required"
+    assert findings[0].rule == "gen_ai.provider.name.required"
     assert findings[0].target == "chat"
 
 
-def test_non_gen_ai_span_is_not_flagged() -> None:
-    span = _span({"http.method": "GET"})
-    assert gen_ai_system_required(span, _registry()) == []
+def test_gen_ai_system_does_not_stand_in_for_provider_name() -> None:
+    span = _span({"gen_ai.operation.name": "chat", "gen_ai.system": "openai"})
+    assert len(gen_ai_provider_name_required(span, _registry())) == 1
 
 
-def test_span_with_no_attributes_is_not_flagged() -> None:
-    assert gen_ai_system_required(_span(), _registry()) == []
+def test_provider_name_not_required_on_execute_tool() -> None:
+    span = _span({"gen_ai.operation.name": "execute_tool"}, kind=SpanKind.INTERNAL)
+    assert gen_ai_provider_name_required(span, _registry()) == []
+
+
+def test_provider_name_not_required_on_in_process_invoke_agent() -> None:
+    span = _span({"gen_ai.operation.name": "invoke_agent"}, kind=SpanKind.INTERNAL)
+    assert gen_ai_provider_name_required(span, _registry()) == []
+
+
+def test_provider_name_required_on_remote_invoke_agent() -> None:
+    span = _span({"gen_ai.operation.name": "invoke_agent"}, kind=SpanKind.CLIENT)
+    findings = gen_ai_provider_name_required(span, _registry())
+    assert len(findings) == 1
+    assert "invoke_agent" in findings[0].message
+
+
+def test_span_without_operation_name_is_not_checked_for_provider() -> None:
+    span = _span({"gen_ai.request.model": "gpt-4"})
+    assert gen_ai_provider_name_required(span, _registry()) == []
 
 
 def test_operation_name_known_value_passes() -> None:

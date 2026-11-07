@@ -7,7 +7,46 @@ import pytest
 
 from spanlint.cli import main
 
-OPENAI_FIXTURE = Path(__file__).parent / "fixtures" / "openai" / "chat_completion.json"
+
+def _clean_export(tmp_path: Path) -> Path:
+    path = tmp_path / "trace.json"
+    path.write_text(
+        json.dumps(
+            {
+                "resourceSpans": [
+                    {
+                        "scopeSpans": [
+                            {
+                                "spans": [
+                                    {
+                                        "name": "chat gpt-4o-mini",
+                                        "kind": 3,
+                                        "startTimeUnixNano": "0",
+                                        "endTimeUnixNano": "1",
+                                        "attributes": [
+                                            {
+                                                "key": "gen_ai.operation.name",
+                                                "value": {"stringValue": "chat"},
+                                            },
+                                            {
+                                                "key": "gen_ai.provider.name",
+                                                "value": {"stringValue": "openai"},
+                                            },
+                                            {
+                                                "key": "gen_ai.request.model",
+                                                "value": {"stringValue": "gpt-4o-mini"},
+                                            },
+                                        ],
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        )
+    )
+    return path
 
 
 def test_help_exits_cleanly(capsys: pytest.CaptureFixture[str]) -> None:
@@ -29,15 +68,19 @@ def test_no_args_prints_help_and_returns_zero() -> None:
     assert main([]) == 0
 
 
-def test_check_on_clean_fixture_exits_zero(capsys: pytest.CaptureFixture[str]) -> None:
-    code = main(["check", str(OPENAI_FIXTURE)])
+def test_check_on_clean_export_exits_zero(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    code = main(["check", str(_clean_export(tmp_path))])
     out = capsys.readouterr().out
     assert code == 0
     assert "no findings" in out
 
 
-def test_check_json_format_emits_valid_json(capsys: pytest.CaptureFixture[str]) -> None:
-    code = main(["check", str(OPENAI_FIXTURE), "--format", "json"])
+def test_check_json_format_emits_valid_json(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    code = main(["check", str(_clean_export(tmp_path)), "--format", "json"])
     out = capsys.readouterr().out
     assert code == 0
     assert json.loads(out) == {"findings": []}
