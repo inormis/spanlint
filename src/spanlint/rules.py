@@ -281,7 +281,8 @@ def _matches_type(value: AttributeValue, type_str: str) -> bool:
     if type_str == "string":
         return isinstance(value, str)
     if type_str == "double":
-        return isinstance(value, float)
+        # Weaver takes an int here too: JS exports integral numbers as ints
+        return isinstance(value, int | float) and not isinstance(value, bool)
     if type_str == "int":
         return isinstance(value, int) and not isinstance(value, bool)
     if type_str == "string[]":

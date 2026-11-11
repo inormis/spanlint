@@ -219,6 +219,17 @@ def test_request_temperature_double_passes() -> None:
     assert gen_ai_request_temperature_type(span, _registry()) == []
 
 
+def test_request_temperature_integer_passes_like_weaver() -> None:
+    # Weaver takes an int sample value for a double attribute (weaver#1331)
+    span = _span({"gen_ai.request.temperature": 0})
+    assert gen_ai_request_temperature_type(span, _registry()) == []
+
+
+def test_request_temperature_bool_is_still_flagged() -> None:
+    span = _span({"gen_ai.request.temperature": True})
+    assert len(gen_ai_request_temperature_type(span, _registry())) == 1
+
+
 def test_request_temperature_non_double_is_flagged() -> None:
     # arrange
     span = _span({"gen_ai.request.temperature": "hot"})
