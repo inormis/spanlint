@@ -90,16 +90,37 @@ def gen_ai_operation_name_enum(span: Span, registry: Registry) -> list[Finding]:
     ]
 
 
-def gen_ai_span_kind_for_client_operation(span: Span, registry: Registry) -> list[Finding]:
-    if "gen_ai.operation.name" not in span.attributes:
+# Span kinds from the span definitions. Operations left out of both sets are
+# defined for either kind (invoke_agent, retrieval, memory) or are custom.
+_CLIENT_OPERATIONS = frozenset(
+    {
+        "chat",
+        "text_completion",
+        "generate_content",
+        "realtime_inference",
+        "embeddings",
+        "fetch_response",
+        "create_agent",
+    }
+)
+_INTERNAL_OPERATIONS = frozenset({"execute_tool", "plan", "user_speech"})
+
+
+def gen_ai_span_kind_for_operation(span: Span, registry: Registry) -> list[Finding]:
+    operation = span.attributes.get("gen_ai.operation.name")
+    if operation in _CLIENT_OPERATIONS:
+        expected = SpanKind.CLIENT
+    elif operation in _INTERNAL_OPERATIONS:
+        expected = SpanKind.INTERNAL
+    else:
         return []
-    if span.kind is SpanKind.CLIENT:
+    if span.kind is expected:
         return []
     return [
         Finding(
-            rule="gen_ai.span_kind.client",
+            rule=f"gen_ai.span_kind.{expected.value}",
             target=span.name,
-            message=(f"GenAI client operations must be SpanKind=CLIENT, got {span.kind.value}"),
+            message=f"{operation} spans should be {expected.name}, got {span.kind.value}",
         )
     ]
 
@@ -270,7 +291,7 @@ def _has_gen_ai_attributes(span: Span) -> bool:
 DEFAULT_SPAN_RULES = (
     gen_ai_provider_name_required,
     gen_ai_operation_name_enum,
-    gen_ai_span_kind_for_client_operation,
+    gen_ai_span_kind_for_operation,
     gen_ai_deprecated_attribute_name,
     gen_ai_request_model_type,
     gen_ai_response_model_type,

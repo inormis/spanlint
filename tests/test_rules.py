@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import pytest
+
 from spanlint.model import AttributeValue, Event, InstrumentType, Metric, Span, SpanKind
 from spanlint.registry import Registry, load_registry
 from spanlint.rules import (
@@ -19,7 +21,7 @@ from spanlint.rules import (
     gen_ai_response_finish_reasons_type,
     gen_ai_response_id_type,
     gen_ai_response_model_type,
-    gen_ai_span_kind_for_client_operation,
+    gen_ai_span_kind_for_operation,
 )
 
 FIXTURES = Path(__file__).parent / "fixtures"
@@ -110,12 +112,12 @@ def test_operation_name_missing_is_not_flagged() -> None:
 
 def test_client_operation_on_client_kind_passes() -> None:
     span = _span({"gen_ai.operation.name": "chat"}, kind=SpanKind.CLIENT)
-    assert gen_ai_span_kind_for_client_operation(span, _registry()) == []
+    assert gen_ai_span_kind_for_operation(span, _registry()) == []
 
 
 def test_client_operation_on_internal_kind_is_flagged() -> None:
     span = _span({"gen_ai.operation.name": "chat"}, kind=SpanKind.INTERNAL)
-    findings = gen_ai_span_kind_for_client_operation(span, _registry())
+    findings = gen_ai_span_kind_for_operation(span, _registry())
     assert len(findings) == 1
     assert findings[0].rule == "gen_ai.span_kind.client"
     assert "internal" in findings[0].message
@@ -123,14 +125,40 @@ def test_client_operation_on_internal_kind_is_flagged() -> None:
 
 def test_client_operation_on_server_kind_is_flagged() -> None:
     span = _span({"gen_ai.operation.name": "embeddings"}, kind=SpanKind.SERVER)
-    findings = gen_ai_span_kind_for_client_operation(span, _registry())
+    findings = gen_ai_span_kind_for_operation(span, _registry())
     assert len(findings) == 1
     assert findings[0].rule == "gen_ai.span_kind.client"
 
 
+@pytest.mark.parametrize("operation", ["execute_tool", "plan"])
+def test_internal_operation_on_internal_kind_passes(operation: str) -> None:
+    span = _span({"gen_ai.operation.name": operation}, kind=SpanKind.INTERNAL)
+    assert gen_ai_span_kind_for_operation(span, _registry()) == []
+
+
+def test_internal_operation_on_client_kind_is_flagged() -> None:
+    span = _span({"gen_ai.operation.name": "execute_tool"}, kind=SpanKind.CLIENT)
+    findings = gen_ai_span_kind_for_operation(span, _registry())
+    assert len(findings) == 1
+    assert findings[0].rule == "gen_ai.span_kind.internal"
+    assert "client" in findings[0].message
+
+
+@pytest.mark.parametrize("operation", ["invoke_agent", "retrieval", "search_memory"])
+@pytest.mark.parametrize("kind", [SpanKind.CLIENT, SpanKind.INTERNAL])
+def test_operations_defined_for_both_kinds_accept_either(operation: str, kind: SpanKind) -> None:
+    span = _span({"gen_ai.operation.name": operation}, kind=kind)
+    assert gen_ai_span_kind_for_operation(span, _registry()) == []
+
+
+def test_custom_operation_name_is_not_checked_for_kind() -> None:
+    span = _span({"gen_ai.operation.name": "agent_step"}, kind=SpanKind.SERVER)
+    assert gen_ai_span_kind_for_operation(span, _registry()) == []
+
+
 def test_span_without_operation_name_is_not_flagged_regardless_of_kind() -> None:
-    span = _span({"gen_ai.system": "openai"}, kind=SpanKind.INTERNAL)
-    assert gen_ai_span_kind_for_client_operation(span, _registry()) == []
+    span = _span({"gen_ai.provider.name": "openai"}, kind=SpanKind.INTERNAL)
+    assert gen_ai_span_kind_for_operation(span, _registry()) == []
 
 
 def test_request_model_string_passes() -> None:
