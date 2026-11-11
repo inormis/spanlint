@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 
-from spanlint.report import render_json, render_text
+from spanlint.report import render_json, render_matrix, render_text
 from spanlint.validate import Finding
 
 
@@ -48,3 +48,29 @@ def test_render_text_multiple_findings() -> None:
         Finding(rule="b", target="y", message="2"),
     ]
     assert render_text(findings) == "x: 1 [a]\ny: 2 [b]\n2 findings\n"
+
+
+def test_render_matrix_empty_is_a_header_only() -> None:
+    assert render_matrix({}) == "| framework |\n| --- |\n"
+
+
+def test_render_matrix_one_cell() -> None:
+    out = render_matrix({"openai": {"gen_ai.request.model.type": 2}})
+    assert out == ("| framework | gen_ai.request.model.type |\n| --- | ---: |\n| openai | 2 |\n")
+
+
+def test_render_matrix_columns_are_the_sorted_union_and_zero_is_blank() -> None:
+    # arrange
+    matrix = {
+        "langfuse": {"gen_ai.attributes.missing": 2},
+        "meai": {"gen_ai.response.finish_reasons.type": 1},
+        "openai": {},
+    }
+    # act
+    lines = render_matrix(matrix).splitlines()
+    # assert
+    assert lines[0] == (
+        "| framework | gen_ai.attributes.missing | gen_ai.response.finish_reasons.type |"
+    )
+    assert lines[1] == "| --- | ---: | ---: |"
+    assert lines[2:] == ["| langfuse | 2 |  |", "| meai |  | 1 |", "| openai |  |  |"]
