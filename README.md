@@ -19,13 +19,25 @@ nobody can say which layer dropped the attribute.
 spanlint reads the telemetry a framework really emits and reports where it
 diverges from the spec.
 
-## Not Weaver
+## Not Weaver, not the conformance suite
 
 [Weaver](https://github.com/open-telemetry/weaver) works on the convention
-registries: the YAML that defines what an attribute is, and code generation
-from it. spanlint looks at the other end, the spans and metrics a running
-application produces. If you are writing conventions, you want Weaver. If
-you are checking whether your instrumentation follows them, this.
+registries: the YAML that defines what an attribute is, code generation from
+it, and, with `weaver registry live-check`, validation of sample telemetry
+against them. The OpenTelemetry project runs that live-check over scenario
+programs for several dozen GenAI library and instrumentation pairs in
+[semantic-conventions-conformance](https://github.com/open-telemetry/semantic-conventions-conformance)
+and publishes the results. If you maintain an instrumentation, that is where
+its conformance is tracked.
+
+spanlint is for the other side. You have an application, it exports
+telemetry, and you want to know in CI whether what it exports still matches
+the conventions. It reads OTLP JSON files or captures spans in a pytest
+fixture, needs no mock server and no scenario, and tells you which spans
+came from which framework. It also carries a few checks the suite does not
+have today, span kind among them, and fixtures from runtimes the suite does
+not run (.NET, Node). The first comparison across nine frameworks is in
+[docs/conformance/2026-11.md](docs/conformance/2026-11.md).
 
 ## Install
 
@@ -65,18 +77,27 @@ Line-delimited OTLP exports (`.jsonl`, one export per line, which is what
 the OTel Collector's file exporter writes) are read the same way. The
 parser is picked by the file's extension.
 
+`spanlint matrix <dir>` runs the bundled framework adapters over a tree of
+exports laid out as `<dir>/<framework>/*.json` and prints a markdown table
+of finding counts per framework and rule. The fixtures in this repository
+are laid out that way, so `spanlint matrix tests/fixtures` reproduces the
+table in [docs/conformance/2026-11.md](docs/conformance/2026-11.md).
+
 ## Supported frameworks
 
 Framework detection is what tells spanlint which spans came from where, so
 per-framework conformance can be reported without mixing everything together.
 
-- **openai-python**: spans emitted directly by the OpenAI Python SDK, by
-  the OpenTelemetry contrib instrumentation
-  (`opentelemetry-instrumentation-openai`, including the `_v2` scope), and
-  by Traceloop's OpenAI instrumentation (scope
-  `opentelemetry.instrumentation.openai.v1`). Identification falls back to
-  `gen_ai.system=openai` or `gen_ai.provider.name=openai` when the
-  instrumentation scope name is not one of the expected values.
+- **openai-python**: spans from the OpenTelemetry contrib instrumentation
+  (`opentelemetry-instrumentation-openai-v2`, scope
+  `opentelemetry.instrumentation.openai_v2`) and from Traceloop's OpenAI
+  instrumentation (scope `opentelemetry.instrumentation.openai.v1`).
+  Identification falls back to `gen_ai.system=openai` or
+  `gen_ai.provider.name=openai` when the scope name is not one of the
+  expected values; that is also how the contrib instrumentation's
+  `gen_ai_latest_experimental` output is recognised, since that path emits
+  from opentelemetry-util-genai's own `opentelemetry.util.genai.handler`
+  scope.
 - **LangChain**: spans emitted by Traceloop's
   `opentelemetry-instrumentation-langchain`, which is also what the Traceloop
   SDK installs, and by Arize's `openinference-instrumentation-langchain`.
@@ -121,17 +142,20 @@ More adapters land as work on them starts.
 ## Status
 
 Early, but it runs. You can feed it an OTLP JSON export and get a list of
-findings back, in text or JSON. There are a dozen rules so far, all for the
-GenAI conventions: attribute types, the operation name enum, the two
-message/choice events, and the token/duration histograms. It recognises
-spans from the OpenAI Python SDK, LangChain, LlamaIndex, LiteLLM, Semantic
-Kernel, Microsoft.Extensions.AI, the Vercel AI SDK, Langfuse and the
-Traceloop SDK. There is also a pytest fixture that grabs whatever spans your
-test emits so you can lint them in place.
+findings back, in text or JSON. The rules follow the GenAI conventions as
+of November 2026 (the registry is pinned to a semantic-conventions-genai
+commit, see `scripts/refresh_registry.sh`): `gen_ai.provider.name` where
+the span definitions require it, renamed and removed attribute names,
+the open operation name enum, span kind per operation, attribute types,
+the two legacy message/choice events, and the token/duration histograms.
+It recognises spans from the OpenAI contrib instrumentation, LangChain,
+LlamaIndex, LiteLLM, Semantic Kernel, Microsoft.Extensions.AI, the Vercel
+AI SDK, Langfuse and the Traceloop SDK, and `spanlint matrix` turns a tree
+of exports into the per-framework table in `docs/conformance/`. There is
+also a pytest fixture that grabs whatever spans your test emits so you can
+lint them in place.
 
 Nothing is on PyPI yet. 0.1.0 is cut in the changelog and goes out as soon
-as the publishing side is wired up. After that: more framework adapters,
-and a report that shows per framework where the telemetry drifts from the
-spec.
+as the publishing side is wired up.
 
 Apache-2.0
