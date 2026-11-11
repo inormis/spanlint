@@ -5,9 +5,10 @@ import sys
 from importlib.metadata import version
 from pathlib import Path
 
+from spanlint.conformance import run_matrix
 from spanlint.otlp import parse_otlp_json_file, parse_otlp_jsonl_file
 from spanlint.registry import load_registry
-from spanlint.report import render_json, render_text
+from spanlint.report import render_json, render_matrix, render_text
 from spanlint.rules import DEFAULT_SPAN_RULES
 from spanlint.validate import validate
 
@@ -19,6 +20,8 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if args.command == "check":
         return _run_check(args)
+    if args.command == "matrix":
+        return _run_matrix(args)
     parser.print_help()
     return 0
 
@@ -30,6 +33,8 @@ def _build_parser() -> argparse.ArgumentParser:
     check = sub.add_parser("check", help="Validate an OTLP JSON file against GenAI semconv")
     check.add_argument("path", type=Path)
     check.add_argument("--format", choices=("text", "json"), default="text")
+    matrix = sub.add_parser("matrix", help="Count findings per framework over a fixture tree")
+    matrix.add_argument("fixtures", type=Path)
     return parser
 
 
@@ -41,6 +46,12 @@ def _run_check(args: argparse.Namespace) -> int:
     rendered = render_json(findings) if args.format == "json" else render_text(findings)
     sys.stdout.write(rendered)
     return 1 if findings else 0
+
+
+def _run_matrix(args: argparse.Namespace) -> int:
+    registry = load_registry(_REGISTRY_PATH)
+    sys.stdout.write(render_matrix(run_matrix(args.fixtures, registry)))
+    return 0
 
 
 if __name__ == "__main__":

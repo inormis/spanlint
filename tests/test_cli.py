@@ -163,3 +163,22 @@ def test_check_dispatches_on_jsonl_extension(
     out = capsys.readouterr().out
     assert code == 0
     assert "no findings" in out
+
+
+def test_matrix_prints_a_markdown_table_over_a_fixture_tree(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    code = main(["matrix", str(Path(__file__).parent / "fixtures")])
+    lines = capsys.readouterr().out.splitlines()
+    assert code == 0
+    assert lines[0].startswith("| framework |")
+    assert lines[1].startswith("| --- |")
+    assert any(line.startswith("| vercel_ai |") for line in lines)
+
+
+def test_matrix_on_a_tree_without_fixtures_prints_the_header_only(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    code = main(["matrix", str(tmp_path)])
+    assert code == 0
+    assert capsys.readouterr().out == "| framework |\n| --- |\n"
