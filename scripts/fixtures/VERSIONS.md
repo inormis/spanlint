@@ -252,3 +252,45 @@ only, so it posts to the receiver like the .NET program, and it sends the
 body chunked. The exporter is held at 0.223 because 0.301 wants a newer
 @opentelemetry/api than @ai-sdk/otel pins; with 1.9.1 the tree holds a
 single copy of the API. node_modules is not committed.
+
+## openai
+
+Captured 2026-11-07 with Python 3.12.13. Two runs of the same script, one per
+attribute set the instrumentation can emit.
+
+| package | version |
+| --- | --- |
+| openai | 2.54.0 |
+| opentelemetry-instrumentation-openai-v2 | 2.4b0 |
+| opentelemetry-util-genai | 0.4b0 |
+| opentelemetry-sdk | 1.45.1 |
+| opentelemetry-exporter-otlp-proto-common | 1.45.1 |
+
+```
+uv venv --python 3.12 .venv-openai
+uv pip install --python .venv-openai/bin/python \
+    openai==2.54.0 opentelemetry-instrumentation-openai-v2==2.4b0 \
+    opentelemetry-util-genai==0.4b0 \
+    opentelemetry-sdk==1.45.1 opentelemetry-exporter-otlp-proto-common==1.45.1
+OPENAI_API_KEY=... .venv-openai/bin/python scripts/fixtures/openai/capture.py default \
+    > tests/fixtures/openai/chat_completion_default.json
+OPENAI_API_KEY=... .venv-openai/bin/python scripts/fixtures/openai/capture.py latest \
+    > tests/fixtures/openai/chat_completion_latest.json
+```
+
+The instrumentation is the upstream one from opentelemetry-python-contrib.
+Out of the box it still emits the pre-rename attributes (`gen_ai.system`,
+`gen_ai.openai.response.service_tier`) on its own
+`opentelemetry.instrumentation.openai_v2` scope. The `latest` run sets
+`OTEL_SEMCONV_STABILITY_OPT_IN=gen_ai_latest_experimental`, which hands the
+span to opentelemetry-util-genai's handler (scope
+`opentelemetry.util.genai.handler`) and switches to `gen_ai.provider.name`
+and the `openai.*` names. Content capture is `SPAN_ONLY`; only the latest
+path puts the messages on the span.
+
+util-genai is pinned to the release that shipped alongside the
+instrumentation, since 1.x removed the `instruments` module it imports.
+openai is pinned to the last 2.x because 3.x moved its client to httpx2, so
+the `isinstance(base_url, httpx.URL)` check in the instrumentation fails and
+`server.address` is lost. These two files replace a hand-written example
+that stood in for this framework before; it was never captured.

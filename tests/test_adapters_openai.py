@@ -9,7 +9,10 @@ from spanlint.model import Span, SpanKind
 from spanlint.otlp import parse_otlp_json_file
 
 FIXTURES = Path(__file__).parent / "fixtures"
-FIXTURE = FIXTURES / "openai" / "chat_completion.json"
+OPENAI_FIXTURES = [
+    FIXTURES / "openai" / "chat_completion_default.json",
+    FIXTURES / "openai" / "chat_completion_latest.json",
+]
 TRACELOOP_FIXTURES = [
     FIXTURES / "llamaindex" / "chat_engine_traceloop.json",
     FIXTURES / "traceloop" / "workflow.json",
@@ -27,10 +30,18 @@ def _bare(**kw: object) -> Span:
     return Span(**defaults)  # type: ignore[arg-type]
 
 
-def test_identifies_openai_fixture() -> None:
-    spans = parse_otlp_json_file(FIXTURE)
+@pytest.mark.parametrize("fixture", OPENAI_FIXTURES, ids=lambda p: p.stem)
+def test_identifies_contrib_fixtures(fixture: Path) -> None:
+    spans = parse_otlp_json_file(fixture)
     assert len(spans) == 1
     assert is_openai_span(spans[0])
+
+
+def test_latest_fixture_is_claimed_through_the_provider_fallback() -> None:
+    # the opt-in path hands the span to opentelemetry-util-genai's own tracer
+    span = parse_otlp_json_file(OPENAI_FIXTURES[1])[0]
+    assert span.instrumentation_scope == "opentelemetry.util.genai.handler"
+    assert is_openai_span(span)
 
 
 @pytest.mark.parametrize("fixture", TRACELOOP_FIXTURES, ids=lambda p: p.parent.name)
