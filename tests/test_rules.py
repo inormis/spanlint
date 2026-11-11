@@ -105,6 +105,19 @@ def test_operation_name_unknown_value_is_flagged() -> None:
     assert "chit_chat" in findings[0].message
 
 
+def test_operation_name_finding_says_the_enum_is_open() -> None:
+    findings = gen_ai_operation_name_enum(
+        _span({"gen_ai.operation.name": "agent_step"}), _registry()
+    )
+    assert "custom" in findings[0].message
+
+
+def test_operation_name_framework_entrypoint_pattern_passes() -> None:
+    # the agent span definition allows invoke_{framework_entrypoint}
+    span = _span({"gen_ai.operation.name": "invoke_crew"})
+    assert gen_ai_operation_name_enum(span, _registry()) == []
+
+
 def test_operation_name_missing_is_not_flagged() -> None:
     span = _span({"gen_ai.system": "openai"})
     assert gen_ai_operation_name_enum(span, _registry()) == []

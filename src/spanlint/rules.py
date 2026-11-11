@@ -81,11 +81,18 @@ def gen_ai_operation_name_enum(span: Span, registry: Registry) -> list[Finding]:
     attr = registry.attribute("gen_ai.operation.name")
     if attr is None or attr.type != "enum" or value in attr.enum_members:
         return []
+    # invoke_{framework_entrypoint} is a documented pattern, not a member
+    if value.startswith("invoke_"):
+        return []
     return [
         Finding(
             rule="gen_ai.operation.name.enum",
             target=span.name,
-            message=f"gen_ai.operation.name={value!r} is not a known operation",
+            message=(
+                f"gen_ai.operation.name={value!r} is not a documented operation; "
+                "the enum is open, but a custom value is only for operations the "
+                "conventions do not cover"
+            ),
         )
     ]
 
