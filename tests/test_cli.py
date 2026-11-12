@@ -145,9 +145,13 @@ def test_check_dispatches_on_jsonl_extension(
                                     "endTimeUnixNano": "1",
                                     "attributes": [
                                         {
+                                            "key": "gen_ai.operation.name",
+                                            "value": {"stringValue": "chat"},
+                                        },
+                                        {
                                             "key": "gen_ai.provider.name",
                                             "value": {"stringValue": "openai"},
-                                        }
+                                        },
                                     ],
                                 }
                             ]

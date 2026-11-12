@@ -13,6 +13,7 @@ from spanlint.rules import (
     gen_ai_deprecated_attribute_name,
     gen_ai_message_event_attribute_types,
     gen_ai_operation_name_enum,
+    gen_ai_operation_name_required,
     gen_ai_provider_name_required,
     gen_ai_request_max_tokens_type,
     gen_ai_request_model_type,
@@ -87,6 +88,31 @@ def test_provider_name_required_on_remote_invoke_agent() -> None:
 def test_span_without_operation_name_is_not_checked_for_provider() -> None:
     span = _span({"gen_ai.request.model": "gpt-4"})
     assert gen_ai_provider_name_required(span, _registry()) == []
+
+
+def test_operation_name_present_passes() -> None:
+    span = _span({"gen_ai.operation.name": "chat", "gen_ai.provider.name": "openai"})
+    assert gen_ai_operation_name_required(span, _registry()) == []
+
+
+def test_operation_name_missing_on_gen_ai_span_is_flagged() -> None:
+    # arrange
+    span = _span({"gen_ai.provider.name": "openai", "gen_ai.request.model": "gpt-4"})
+    # act
+    findings = gen_ai_operation_name_required(span, _registry())
+    # assert
+    assert len(findings) == 1
+    assert findings[0].rule == "gen_ai.operation.name.required"
+    assert findings[0].target == "chat"
+
+
+def test_operation_name_not_required_without_gen_ai_attributes() -> None:
+    span = _span({"http.request.method": "GET"})
+    assert gen_ai_operation_name_required(span, _registry()) == []
+
+
+def test_operation_name_required_is_a_default_rule() -> None:
+    assert gen_ai_operation_name_required in DEFAULT_SPAN_RULES
 
 
 def test_operation_name_known_value_passes() -> None:

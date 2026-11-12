@@ -54,6 +54,7 @@ def test_rules_within_a_framework_are_sorted() -> None:
 def test_counts_findings_per_rule_over_claimed_spans_only(tmp_path: Path) -> None:
     # arrange
     broken: dict[str, dict[str, object]] = {
+        "gen_ai.operation.name": {"stringValue": "chat"},
         "gen_ai.provider.name": {"stringValue": "openai"},
         "gen_ai.request.model": {"intValue": "4"},
     }
@@ -76,6 +77,12 @@ def test_claimed_span_without_gen_ai_attributes_is_counted(tmp_path: Path) -> No
 
 
 def test_frameworks_without_fixtures_are_left_out(tmp_path: Path) -> None:
-    span = _span("chat", {"gen_ai.provider.name": {"stringValue": "openai"}})
+    span = _span(
+        "chat",
+        {
+            "gen_ai.operation.name": {"stringValue": "chat"},
+            "gen_ai.provider.name": {"stringValue": "openai"},
+        },
+    )
     _write_export(tmp_path / "openai" / "a.json", "openai", [span])
     assert run_matrix(tmp_path, _registry()) == {"openai": {}}

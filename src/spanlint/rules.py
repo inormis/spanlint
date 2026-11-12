@@ -74,6 +74,18 @@ def gen_ai_provider_name_required(span: Span, registry: Registry) -> list[Findin
     ]
 
 
+def gen_ai_operation_name_required(span: Span, registry: Registry) -> list[Finding]:
+    if not _has_gen_ai_attributes(span) or "gen_ai.operation.name" in span.attributes:
+        return []
+    return [
+        Finding(
+            rule="gen_ai.operation.name.required",
+            target=span.name,
+            message="gen_ai.operation.name is required on every GenAI span",
+        )
+    ]
+
+
 def gen_ai_operation_name_enum(span: Span, registry: Registry) -> list[Finding]:
     value = span.attributes.get("gen_ai.operation.name")
     if not isinstance(value, str):
@@ -297,6 +309,7 @@ def _has_gen_ai_attributes(span: Span) -> bool:
 
 
 DEFAULT_SPAN_RULES = (
+    gen_ai_operation_name_required,
     gen_ai_provider_name_required,
     gen_ai_operation_name_enum,
     gen_ai_span_kind_for_operation,
