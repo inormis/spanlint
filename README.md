@@ -144,8 +144,9 @@ More adapters land as work on them starts.
 Early, but it runs. You can feed it an OTLP JSON export and get a list of
 findings back, in text or JSON. The rules follow the GenAI conventions as
 of November 2026 (the registry is pinned to a semantic-conventions-genai
-commit, see `scripts/refresh_registry.sh`): `gen_ai.provider.name` where
-the span definitions require it, renamed and removed attribute names,
+commit, see `scripts/refresh_registry.sh`): `gen_ai.operation.name` on
+every GenAI span and `gen_ai.provider.name` where the span definitions
+require it, renamed and removed attribute names,
 the open operation name enum, span kind per operation, attribute types,
 the two legacy message/choice events, and the token/duration histograms.
 It recognises spans from the OpenAI contrib instrumentation, LangChain,
