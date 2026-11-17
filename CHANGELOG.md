@@ -1,25 +1,40 @@
 # Changelog
 
-## 0.1.0 — 2026-10-02
+## 0.2.0 — 2026-11-17
 
-First release.
+First published release. 0.1.0 was tagged locally but never went out, so this
+entry covers everything spanlint does today.
 
 ### Added
-- Span and Metric data models.
-- Loader for OpenTelemetry semantic convention YAML (attribute groups).
-- `validate()` and `validate_metrics()` runners returning `Finding` records.
-- Attribute rules: `gen_ai.system` required on GenAI-shaped spans,
-  `gen_ai.operation.name` enum, type checks for `gen_ai.request.model`,
-  `gen_ai.response.model`, `gen_ai.request.temperature`,
-  `gen_ai.request.top_p`, `gen_ai.request.max_tokens`,
-  `gen_ai.response.id`, `gen_ai.response.finish_reasons`.
-- Event rules: type checks for attributes on `gen_ai.user.message`,
-  `gen_ai.system.message` and `gen_ai.choice`.
-- Metric rules: `gen_ai.client.token.usage` and
-  `gen_ai.client.operation.duration` validated as histograms with the
-  expected units.
-- JSON and text report renderers.
-- `spanlint` CLI with `--version` and `--format text|json`.
-- OTLP JSON file parser producing `Span` objects.
-- OpenAI SDK adapter: `is_openai_span` detects spans emitted by
-  `openai-python` instrumentations.
+- Span and metric models, and an OTLP reader: JSON exports, line-delimited
+  JSONL, and an OTLP/HTTP receiver for runtimes whose exporters only speak
+  protobuf.
+- Registry loader for the OpenTelemetry GenAI semantic conventions, reading
+  both `groups` and Weaver `definition/2` files. The shipped registry is
+  `model/gen-ai/registry.yaml` from open-telemetry/semantic-conventions-genai,
+  pinned to a commit and refreshed by `scripts/refresh_registry.sh`.
+- Span rules: `gen_ai.operation.name` required and checked against the open
+  enum, `gen_ai.provider.name` required per operation, deprecated attribute
+  names, span kind per operation, attribute type checks, and
+  `gen_ai.attributes.missing` for framework spans that carry no `gen_ai.*`
+  attribute at all.
+- Event rules for `gen_ai.user.message`, `gen_ai.system.message` and
+  `gen_ai.choice`. Metric rules for `gen_ai.client.token.usage` and
+  `gen_ai.client.operation.duration`.
+- Framework adapters for nine instrumentations across Python, .NET and Node:
+  OpenAI, LangChain, LlamaIndex, Traceloop/OpenLLMetry, LiteLLM, Semantic
+  Kernel, Langfuse, Microsoft.Extensions.AI and the Vercel AI SDK.
+- `spanlint check <path>` for one export and `spanlint matrix <dir>` for a
+  per-framework conformance table. Text and JSON reports.
+- pytest plugin: the `spanlint_spans` fixture captures the spans a test emits
+  so they can be linted in place.
+- First conformance dataset, `docs/conformance/2026-11.md`: nine frameworks
+  audited against the November registry, with capture scripts, pinned
+  versions and per-framework notes.
+
+### Changed
+- `gen_ai.system` is gone from the conventions. The rule that required it was
+  replaced by `gen_ai.provider.name.required`, and `gen_ai.system` is now
+  reported as a deprecated name.
+- An integer is accepted where the conventions declare a double, matching
+  Weaver since v0.23.0.

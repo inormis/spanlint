@@ -156,7 +156,7 @@ of exports into the per-framework table in `docs/conformance/`. There is
 also a pytest fixture that grabs whatever spans your test emits so you can
 lint them in place.
 
-Nothing is on PyPI yet. 0.1.0 is cut in the changelog and goes out as soon
-as the publishing side is wired up.
+On PyPI as of 0.2.0. Next up: a GitHub Action so a conformance check can
+run in CI, and a second dataset once the conventions move again.
 
 Apache-2.0
