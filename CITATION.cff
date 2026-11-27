@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: If you use spanlint or its conformance dataset, please cite it as below.
+title: "spanlint: conformance linter for OpenTelemetry GenAI telemetry"
+type: software
+authors:
+  - family-names: Kuciuk
+    given-names: Artiom
+repository-code: https://github.com/inormis/spanlint
+url: https://inormis.github.io/spanlint/
+license: Apache-2.0
+version: 0.2.1
+date-released: "2026-11-27"
+keywords:
+  - opentelemetry
+  - generative-ai
+  - semantic-conventions
+  - observability
+  - conformance
+  - linter
+abstract: >-
+  spanlint checks whether the telemetry an AI framework emits matches the
+  OpenTelemetry GenAI semantic conventions. The repository includes a
+  conformance dataset that compares nine AI frameworks across Python, .NET
+  and Node against the conventions as of November 2026, with the captured
+  OTLP exports, the scripts that produced them and the pinned registry
+  commit, so the results can be regenerated.

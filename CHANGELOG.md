@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.2.1 — 2026-11-27
+
+No changes to the linter itself.
+
+### Added
+- [spanlint-action](https://github.com/inormis/spanlint-action) runs spanlint
+  in GitHub Actions. The README has a short "Use in CI" section, and the
+  `action-selftest` workflow checks the action against the fixtures here.
+- The conformance dataset is published as a page at
+  https://inormis.github.io/spanlint/.
+- `CITATION.cff`, so the repository and the dataset can be cited. The release
+  is archived on Zenodo.
+
 ## 0.2.0 — 2026-11-17
 
 First published release. 0.1.0 was tagged locally but never went out, so this

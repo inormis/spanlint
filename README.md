@@ -83,6 +83,21 @@ of finding counts per framework and rule. The fixtures in this repository
 are laid out that way, so `spanlint matrix tests/fixtures` reproduces the
 table in [docs/conformance/2026-11.md](docs/conformance/2026-11.md).
 
+## Use in CI
+
+In GitHub Actions, [spanlint-action](https://github.com/inormis/spanlint-action)
+installs spanlint and checks a set of OTLP exports, for example the traces
+your integration tests write through the Collector's file exporter:
+
+```yaml
+- uses: inormis/spanlint-action@v1
+  with:
+    files: traces/**/*.json
+```
+
+Findings show up as warnings on the files and in the job summary, and the
+step fails if there are any.
+
 ## Supported frameworks
 
 Framework detection is what tells spanlint which spans came from where, so
@@ -156,7 +171,8 @@ of exports into the per-framework table in `docs/conformance/`. There is
 also a pytest fixture that grabs whatever spans your test emits so you can
 lint them in place.
 
-On PyPI as of 0.2.0. Next up: a GitHub Action so a conformance check can
-run in CI, and a second dataset once the conventions move again.
+On PyPI as of 0.2.0, and runs in GitHub Actions through
+[spanlint-action](https://github.com/inormis/spanlint-action). Next up: a
+second dataset once the conventions move again.
 
 Apache-2.0

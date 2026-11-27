@@ -1,0 +1,42 @@
+name: action-selftest
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  selftest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Divergent span fails
+        id: divergent
+        uses: inormis/spanlint-action@v1
+        continue-on-error: true
+        with:
+          files: tests/fixtures/meai/chat.json
+
+      - name: Conformant span passes
+        id: conformant
+        uses: inormis/spanlint-action@v1
+        with:
+          files: tests/fixtures/litellm/completion_traceloop.json
+
+      - name: Check outcomes
+        env:
+          DIVERGENT_OUTCOME: ${{ steps.divergent.outcome }}
+          DIVERGENT_FINDINGS: ${{ steps.divergent.outputs.findings }}
+          CONFORMANT_FINDINGS: ${{ steps.conformant.outputs.findings }}
+        run: |
+          test "$DIVERGENT_OUTCOME" = failure
+          test "$DIVERGENT_FINDINGS" = 1
+          test "$CONFORMANT_FINDINGS" = 0
+
+      - name: Report on all fixtures
+        uses: inormis/spanlint-action@v1
+        with:
+          files: tests/fixtures/**/*.json
+          fail-on-findings: false
