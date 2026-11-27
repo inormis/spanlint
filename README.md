@@ -2,6 +2,7 @@
 
 [![ci](https://github.com/inormis/spanlint/actions/workflows/ci.yml/badge.svg)](https://github.com/inormis/spanlint/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/spanlint.svg)](https://pypi.org/project/spanlint/)
+[![DOI](https://zenodo.org/badge/github/1358811495.svg)](https://doi.org/10.5281/zenodo.24576737)
 
 Checks whether GenAI telemetry actually matches the OpenTelemetry GenAI
 semantic conventions.

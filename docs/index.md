@@ -11,7 +11,8 @@ telemetry an AI framework emits matches the
   from the conventions somewhere.
 
 Each dataset is regenerated from the captures in the repository with
-`spanlint matrix tests/fixtures`.
+`spanlint matrix tests/fixtures`. The repository is archived on Zenodo:
+[doi:10.5281/zenodo.24576737](https://doi.org/10.5281/zenodo.24576737).
 
 ## Use it
 

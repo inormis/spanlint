@@ -5,6 +5,7 @@ type: software
 authors:
   - family-names: Kuciuk
     given-names: Artiom
+doi: 10.5281/zenodo.24576737
 repository-code: https://github.com/inormis/spanlint
 url: https://inormis.github.io/spanlint/
 license: Apache-2.0
